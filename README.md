@@ -1,4 +1,4 @@
-# cdda_maped <span style="float:right; color:green">`🗺️'d`</span>
+# `🗺️'d`
 
 ## Cataclysm: Dark Days Ahead - Map Editor
 
