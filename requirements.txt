@@ -1,0 +1,9 @@
+# CDDA-maped Requirements
+
+# GUI Framework
+PySide6>=6.5.0
+qtawesome>=1.2.0  # Material Design and Font Awesome icons for Qt
+
+# Utilities for future development
+pillow>=9.0.0  # Image processing for tilesets
+orjson>=3.8.0  # Fast JSON parser and serializer

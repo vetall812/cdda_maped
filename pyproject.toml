@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cdda-maped"
+version = "0.1.0"
+description = "Visual map editor for Cataclysm: Dark Days Ahead"
+authors = [
+    {name = "CDDA-maped Contributors"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Games/Entertainment",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+]
+dependencies = [
+    "PySide6>=6.5.0",
+    "pillow>=9.0.0",
+    "orjson>=3.8.0",
+    "qtawesome>=1.3.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-qt",
+    "black",
+    "flake8",
+    "mypy",
+]
+
+[project.urls]
+Homepage = "https://github.com/cdda-maped/cdda-maped"
+Repository = "https://github.com/cdda-maped/cdda-maped"
+Issues = "https://github.com/cdda-maped/cdda-maped/issues"
+
+[project.scripts]
+cdda-maped = "cdda_maped.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["cdda_maped*"]
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[mypy-PySide6.*]
+ignore_missing_imports = True
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+qt_api = "pyside6"
