@@ -1,0 +1,47 @@
+{
+  "id": "beach",
+  "name": "Beach and water",
+  "description": "Two-level map: beach on the surface (sand → water), underwater level (rock → deep water)",
+  "version": "1.0",
+  "sector_width": 8,
+  "sector_height": 5,
+  "sectors": [
+    {
+      "sector_id": "0_0_0-beach",
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "layers": {
+        "terrain": [
+          ["t_sand", "t_sand", "t_sand", "t_sand", "t_water_sh", "t_water_sh", "t_water_dp", "t_water_dp"],
+          ["t_sand", "t_sand", "t_sand", "t_sand", "t_dock", "t_dock", "t_dock", "t_water_dp"],
+          ["t_sand", "t_sand", "t_sand", "t_sand", "t_dock", "t_dock", "t_dock", "t_water_dp"],
+          ["t_sand", "t_sand", "t_sand", "t_sand", "t_water_sh", "t_water_sh", "t_water_dp", "t_water_dp"],
+          ["t_sand", "t_sand", "t_sand", "t_sand", "t_water_sh", "t_water_sh", "t_water_dp", "t_water_dp"]
+        ],
+        "furniture": [
+          ["", "", "", "", "", "", "", ""],
+          ["", "f_locker", "", "", "", "", "", ""],
+          ["", "", "", "", "", "", "", ""],
+          ["", "", "f_chair_plywood", "", "", "", "", ""],
+          ["", "", "", "", "", "", "", ""]
+        ]
+      }
+    },
+    {
+      "sector_id": "0_0_-1-beach_underground",
+      "x": 0,
+      "y": 0,
+      "z": -1,
+      "layers": {
+        "terrain": [
+          ["t_brick_wall", "t_rock", "t_rock", "t_rock", "t_water_dp", "t_water_dp", "t_water_dp", "t_water_dp"],
+          ["t_rock", "t_rock", "t_rock", "t_rock", "t_water_dp", "t_water_dp", "t_water_dp", "t_water_dp"],
+          ["t_rock", "t_rock", "t_rock", "t_rock", "t_water_dp", "t_water_dp", "t_water_dp", "t_water_dp"],
+          ["t_rock", "t_rock", "t_rock", "t_rock", "t_water_dp", "t_water_dp", "t_water_dp", "t_water_dp"],
+          ["t_rock", "t_rock", "t_rock", "t_rock", "t_water_dp", "t_water_dp", "t_water_dp", "t_water_dp"]
+        ]
+      }
+    }
+  ]
+}
