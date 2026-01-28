@@ -49,7 +49,7 @@ Issues = "https://github.com/cdda-maped/cdda-maped/issues"
 cdda-maped = "cdda_maped.__main__:main"
 
 [tool.setuptools.packages.find]
-where = ["."]
+where = ["src"]
 include = ["cdda_maped*"]
 
 [tool.black]

@@ -61,17 +61,17 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e ".[dev]"
 
-      - name: Format code with black
-        run: black cdda_maped
+      - name: Check code formatting with black
+        run: black --check src/cdda_maped
 
       - name: Lint with flake8
-        run: flake8 cdda_maped
+        run: flake8 src/cdda_maped
 
       - name: Type check with mypy
         continue-on-error: false
         env:
           QT_QPA_PLATFORM: offscreen
-        run: mypy cdda_maped
+        run: mypy src/cdda_maped
 
       - name: Run tests
         env:
