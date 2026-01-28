@@ -23,7 +23,7 @@ class PlaceholderRenderer:
         self,
         scene: QGraphicsScene,
         transformer: CoordinateTransformer,
-        scene_manager: SceneManager
+        scene_manager: SceneManager,
     ):
         """Initialize the placeholder renderer.
 
@@ -65,19 +65,26 @@ class PlaceholderRenderer:
 
         # Get scene position (no sprite offset)
         scene_x, scene_y = self.transformer.get_scene_position(
-            tile_x, tile_y, self.scene_manager.offset_x, self.scene_manager.offset_y, 0, 0
+            tile_x,
+            tile_y,
+            self.scene_manager.offset_x,
+            self.scene_manager.offset_y,
+            0,
+            0,
         )
 
         # ISO rhombus - four corners
         half_w = tile_width / 2
         half_h = tile_height / 2
 
-        polygon = QPolygonF([
-            QPointF(scene_x + half_w, scene_y),               # Top corner (right)
-            QPointF(scene_x + tile_width, scene_y + half_h),  # Right corner
-            QPointF(scene_x + half_w, scene_y + tile_height), # Bottom corner
-            QPointF(scene_x, scene_y + half_h),               # Left corner
-        ])
+        polygon = QPolygonF(
+            [
+                QPointF(scene_x + half_w, scene_y),  # Top corner (right)
+                QPointF(scene_x + tile_width, scene_y + half_h),  # Right corner
+                QPointF(scene_x + half_w, scene_y + tile_height),  # Bottom corner
+                QPointF(scene_x, scene_y + half_h),  # Left corner
+            ]
+        )
 
         brush = self._get_placeholder_color(object_id)
         item = QGraphicsPolygonItem(polygon)
@@ -98,7 +105,12 @@ class PlaceholderRenderer:
 
         # Get scene position (no sprite offset)
         scene_x, scene_y = self.transformer.get_scene_position(
-            tile_x, tile_y, self.scene_manager.offset_x, self.scene_manager.offset_y, 0, 0
+            tile_x,
+            tile_y,
+            self.scene_manager.offset_x,
+            self.scene_manager.offset_y,
+            0,
+            0,
         )
 
         # Inset rectangle slightly to show grid lines
@@ -135,14 +147,16 @@ class PlaceholderRenderer:
         else:  # other
             # Vertical stripes
             color = QColor(Qt.GlobalColor.gray)
-            return self._create_striped_brush(color, stripe_width=2, stripe_spacing=4, vertical=True)
+            return self._create_striped_brush(
+                color, stripe_width=2, stripe_spacing=4, vertical=True
+            )
 
     def _create_striped_brush(
         self,
         color: QColor,
         stripe_width: int = 2,
         stripe_spacing: int = 4,
-        vertical: bool = False
+        vertical: bool = False,
     ) -> QBrush:
         """Create a brush with diagonal or vertical stripes.
 

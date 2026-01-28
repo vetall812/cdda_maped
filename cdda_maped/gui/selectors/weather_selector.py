@@ -123,7 +123,9 @@ class WeatherSelector(IconSelector):
 
                 # Support "id" being either a string or a list of strings
                 if isinstance(obj_id, list):
-                    ids: List[str] = [str(item) for item in obj_id if isinstance(item, str)]
+                    ids: List[str] = [
+                        str(item) for item in obj_id if isinstance(item, str)
+                    ]
                 else:
                     ids = [str(obj_id)]
                 for wid in ids:
@@ -213,7 +215,12 @@ class WeatherSelector(IconSelector):
         # Find index by weather_id in combo data
         for i in range(self.combo.count()):
             data = self.combo.itemData(i)
-            if isinstance(data, (tuple, list)) and data and len(data) >= 2 and str(data[0]) == weather_id:
+            if (
+                isinstance(data, (tuple, list))
+                and data
+                and len(data) >= 2
+                and str(data[0]) == weather_id
+            ):
                 self.combo.setCurrentIndex(i)
                 self.current_weather = weather_id
                 self.current_mod = str(data[1])
@@ -238,7 +245,12 @@ class WeatherSelector(IconSelector):
             # Try to find and select this weather
             for i in range(self.combo.count()):
                 data = self.combo.itemData(i)
-                if isinstance(data, (tuple, list)) and data and len(data) >= 2 and str(data[0]) == weather_id:
+                if (
+                    isinstance(data, (tuple, list))
+                    and data
+                    and len(data) >= 2
+                    and str(data[0]) == weather_id
+                ):
                     self.combo.setCurrentIndex(i)
                     self.current_weather = str(data[0])
                     self.current_mod = str(data[1])

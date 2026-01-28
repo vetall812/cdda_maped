@@ -75,9 +75,9 @@ class JsonDisplayWidget(QWidget):
     def _strip_nulls(self, obj: Any) -> Any:
         """Recursively drop fields and items that are None or height_3d=0 to keep JSON compact."""
         if isinstance(obj, dict):
-            return {k: self._strip_nulls(v) for k, v in obj.items() if v is not None and not (k == "height_3d" and v == 0)} # type: ignore
+            return {k: self._strip_nulls(v) for k, v in obj.items() if v is not None and not (k == "height_3d" and v == 0)}  # type: ignore
         if isinstance(obj, list):
-            return [self._strip_nulls(v) for v in obj if v is not None] # type: ignore
+            return [self._strip_nulls(v) for v in obj if v is not None]  # type: ignore
         return obj
 
     def _make_serializable(self, obj: Any) -> Any:

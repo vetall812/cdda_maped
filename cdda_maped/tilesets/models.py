@@ -9,10 +9,10 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List, Tuple, TypedDict, Sequence, cast
 from PIL import Image
 
-
 # =============================================================================
 # Tile Models
 # =============================================================================
+
 
 @dataclass
 class WeightedSprite:
@@ -22,6 +22,7 @@ class WeightedSprite:
     If several are present the caller can roll a random choice using the
     weight attribute. This class simply stores the configuration.
     """
+
     weight: int
     sprite: int | list[int]
 
@@ -37,7 +38,7 @@ class WeightedSprite:
         """
         return cls(
             weight=int(data.get("weight", 1)),
-            sprite=data["sprite"]  # Can be int or list[int]
+            sprite=data["sprite"],  # Can be int or list[int]
         )
 
     @classmethod
@@ -87,6 +88,7 @@ class TileSource:
 
     Fields intentionally mirror the upstream Cataclysm-DDA tileset schema.
     """
+
     id: str = "unknown"
     fg: int | list[int] | list[WeightedSprite] | None = 0
     bg: int | list[int] | list[WeightedSprite] | None = None
@@ -129,7 +131,7 @@ class TileSource:
             animated=data.get("animated"),
             rotates=data.get("rotates"),
             multitile=data.get("multitile"),
-            additional_tiles=additional_tiles
+            additional_tiles=additional_tiles,
         )
 
 
@@ -141,6 +143,7 @@ class Tile:
     source mod ("dda" for base game). When several mods override the same
     tile id, the priority resolution happens in the managers layer.
     """
+
     tileid: str
     source: TileSource
     sheet_id: str = ""  # Уникальный ID листа
@@ -154,6 +157,7 @@ class SheetInfo:
     Contains metadata needed for rendering without holding the full Sheet object.
     Used as TileObject.style and returned from service methods.
     """
+
     name: str = "unknown"
     file: str = ""
     sprite_width: int = 32
@@ -187,7 +191,7 @@ class SheetInfo:
             sprite_offset_y=int(data.get("sprite_offset_y", 0)),
             sprite_offset_x_retracted=int(data.get("sprite_offset_x_retracted", 0)),
             sprite_offset_y_retracted=int(data.get("sprite_offset_y_retracted", 0)),
-            pixelscale=int(data.get("pixelscale", 1))
+            pixelscale=int(data.get("pixelscale", 1)),
         )
 
     def to_dict(self) -> dict[str, Any]:
@@ -207,7 +211,7 @@ class SheetInfo:
             "sprite_offset_y": self.sprite_offset_y,
             "sprite_offset_x_retracted": self.sprite_offset_x_retracted,
             "sprite_offset_y_retracted": self.sprite_offset_y_retracted,
-            "pixelscale": self.pixelscale
+            "pixelscale": self.pixelscale,
         }
 
 
@@ -218,6 +222,7 @@ class TileObject:
     Produced by high-level service methods once sprite indices have been
     collected and converted to actual `Image.Image` objects.
     """
+
     source: TileSource
     style: SheetInfo
     sprites: dict[int, Image.Image]
@@ -227,6 +232,7 @@ class TileObject:
 # Sheet Models
 # =============================================================================
 
+
 class SpriteEntry(TypedDict):
     """Entry describing a single fallback (ASCII) sprite.
 
@@ -234,6 +240,7 @@ class SpriteEntry(TypedDict):
     id:    ASCII character identifier.
     sprite: PIL Image instance.
     """
+
     color: str
     id: str
     sprite: Image.Image
@@ -249,6 +256,7 @@ class Sheet:
     The image is sliced immediately on construction (see `__post_init__`).
     Offsets allow partial shifting of the grid inside the source image.
     """
+
     name: str  # Уникальное имя листа
     file: str  # Путь к файлу изображения
     image: Image.Image
@@ -273,11 +281,15 @@ class Sheet:
         Returns:
             Sheet with properly typed fields
         """
-        tiles_source_raw: list[Any] = data.get("tiles_source", []) if isinstance(
-            data.get("tiles_source", []), list
-        ) else []
+        tiles_source_raw: list[Any] = (
+            data.get("tiles_source", [])
+            if isinstance(data.get("tiles_source", []), list)
+            else []
+        )
         tiles_source: List[Dict[str, Any]] = [
-            cast(Dict[str, Any], item) for item in tiles_source_raw if isinstance(item, dict)
+            cast(Dict[str, Any], item)
+            for item in tiles_source_raw
+            if isinstance(item, dict)
         ]
 
         return cls(
@@ -354,7 +366,10 @@ class FallbackSheet(Sheet):
     Layout expectation: the image stacks 16 color layers vertically;
     each layer contains a grid of up to 256 ASCII glyphs.
     """
-    sprites_by_char: Dict[Tuple[str, str], Image.Image] = field(init=False, default_factory=lambda: {})
+
+    sprites_by_char: Dict[Tuple[str, str], Image.Image] = field(
+        init=False, default_factory=lambda: {}
+    )
     colors: List[str] = field(init=False, default_factory=lambda: [])
     color_map: Dict[str, int] = field(init=False, default_factory=lambda: {})
 
@@ -387,11 +402,15 @@ class FallbackSheet(Sheet):
         Returns:
             FallbackSheet with properly typed fields
         """
-        tiles_source_raw: list[Any] = data.get("tiles_source", []) if isinstance(
-            data.get("tiles_source", []), list
-        ) else []
+        tiles_source_raw: list[Any] = (
+            data.get("tiles_source", [])
+            if isinstance(data.get("tiles_source", []), list)
+            else []
+        )
         tiles_source: List[Dict[str, Any]] = [
-            cast(Dict[str, Any], item) for item in tiles_source_raw if isinstance(item, dict)
+            cast(Dict[str, Any], item)
+            for item in tiles_source_raw
+            if isinstance(item, dict)
         ]
 
         return cls(
@@ -457,6 +476,7 @@ class FallbackSheet(Sheet):
 # Tileset Models
 # =============================================================================
 
+
 @dataclass
 class Tileset:
     """Tileset metadata descriptor.
@@ -465,6 +485,7 @@ class Tileset:
     `objects_source` keeps the parsed tiles-new list (already extracted
     from tile_info.json) for direct use without re-parsing.
     """
+
     short_name: str = "not found"
     view_name: str = "not found"
     folder_name: str = "not found"
@@ -475,7 +496,7 @@ class Tileset:
     is_iso: bool = False
     retract_dist_min: float = 2.5  # deprecated
     retract_dist_max: float = 5.0  # deprecated
-    objects_source: list[dict[str, Any]] = field(default_factory=list) # type: ignore
+    objects_source: list[dict[str, Any]] = field(default_factory=list)  # type: ignore
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "Tileset":
@@ -498,5 +519,5 @@ class Tileset:
             is_iso=bool(data.get("iso", data.get("is_iso", False))),
             retract_dist_min=float(data.get("retract_dist_min", 2.5)),
             retract_dist_max=float(data.get("retract_dist_max", 5.0)),
-            objects_source=list(data.get("objects_source", []))
+            objects_source=list(data.get("objects_source", [])),
         )

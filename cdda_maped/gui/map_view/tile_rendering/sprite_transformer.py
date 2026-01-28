@@ -35,7 +35,9 @@ class SpriteTransformer:
         if cache_size > 0:
             self.logger.debug(f"Pixmap cache cleared ({cache_size} items)")
 
-    def get_multitile_rotation_angle(self, subtile_type: str, subtile_index: int) -> int:
+    def get_multitile_rotation_angle(
+        self, subtile_type: str, subtile_index: int
+    ) -> int:
         """Get rotation angle (clockwise) for a multitile subtile.
 
         Default orientations (before rotation):
@@ -118,7 +120,9 @@ class SpriteTransformer:
         # Clear cache if it grows too large (keep memory usage bounded)
         if len(self._pixmap_cache) >= self._pixmap_cache_max_size:
             self._pixmap_cache.clear()
-            self.logger.debug(f"Pixmap cache cleared (was {self._pixmap_cache_max_size} items)")
+            self.logger.debug(
+                f"Pixmap cache cleared (was {self._pixmap_cache_max_size} items)"
+            )
 
         # Normalize to a Qt-friendly mode
         if pil_image.mode not in ("RGBA", "RGB", "LA", "L"):
@@ -128,7 +132,9 @@ class SpriteTransformer:
         if pixelscale > 1:
             new_width = pil_image.width * pixelscale
             new_height = pil_image.height * pixelscale
-            pil_image = pil_image.resize((new_width, new_height), Image.Resampling.NEAREST)
+            pil_image = pil_image.resize(
+                (new_width, new_height), Image.Resampling.NEAREST
+            )
 
         qt_image = ImageQt(pil_image)
         pixmap = QPixmap.fromImage(qt_image)

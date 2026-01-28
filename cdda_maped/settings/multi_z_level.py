@@ -248,9 +248,7 @@ class MultiZLevelSettings:
         else:
             return 1.0
 
-    def get_preview_values(
-        self, max_levels: int = 3
-    ) -> dict[int, tuple[float, float]]:
+    def get_preview_values(self, max_levels: int = 3) -> dict[int, tuple[float, float]]:
         """Get preview brightness and transparency values for each z-level offset.
 
         Args:

@@ -34,9 +34,7 @@ class TilesetService:
     scanning and registration of base tilesets and mods.
     """
 
-
-
-    def __init__(self, game_path: str, settings: Optional['AppSettings'] = None):
+    def __init__(self, game_path: str, settings: Optional["AppSettings"] = None):
         self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
         self.game_path = Path(game_path)
         self.settings = settings
@@ -67,10 +65,9 @@ class TilesetService:
         Returns:
             True if directory contains tileset files, False otherwise
         """
-        return (
-            (tileset_dir / "tileset.txt").exists() or
-            (tileset_dir / "tile_config.json").exists()
-        )
+        return (tileset_dir / "tileset.txt").exists() or (
+            tileset_dir / "tile_config.json"
+        ).exists()
 
     def _load_base_tilesets(self):
         """Load core tilesets from the `gfx` directory in parallel."""
@@ -105,7 +102,7 @@ class TilesetService:
                     self.logger.info(f"  base tileset: {ts_dir.name}")
                     # Обеспечиваем наличие default fallback для каждого тайлсета
                     self._ensure_default_fallback(ts_dir.name)
-                        # Try to process Qt events if available
+                    # Try to process Qt events if available
                     try:
                         from PySide6.QtWidgets import QApplication
 
@@ -157,11 +154,7 @@ class TilesetService:
             # Submit with index to preserve order
             future_to_index = {
                 executor.submit(
-                    self._load_sheet_image,
-                    sheet_info,
-                    ts_dir,
-                    mod_id,
-                    tileset_info
+                    self._load_sheet_image, sheet_info, ts_dir, mod_id, tileset_info
                 ): idx
                 for idx, sheet_info in enumerate(tileset_info.objects_source)
             }
@@ -172,7 +165,9 @@ class TilesetService:
                 try:
                     sheet = future.result()
                     if sheet:
-                        loaded_sheets_with_index.append((idx, sheet, ts_dir.name, mod_id))
+                        loaded_sheets_with_index.append(
+                            (idx, sheet, ts_dir.name, mod_id)
+                        )
                 except Exception as e:
                     self.logger.error(f"Error loading sheet in {ts_dir.name}: {e}")
 
@@ -201,12 +196,16 @@ class TilesetService:
                 with json_file.open("rb") as f:
                     data = orjson.loads(f.read())
 
-                objects: list[Any] = cast(list[Any], data) if isinstance(data, list) else [data]
+                objects: list[Any] = (
+                    cast(list[Any], data) if isinstance(data, list) else [data]
+                )
                 for obj in objects:
                     if isinstance(obj, dict):
                         obj_dict = cast(dict[str, Any], obj)
                         if obj_dict.get("type") == "mod_tileset":
-                            self._process_mod_tileset(obj_dict, mod_dir, not_found_tilesets, loaded_mappings)
+                            self._process_mod_tileset(
+                                obj_dict, mod_dir, not_found_tilesets, loaded_mappings
+                            )
 
             except (orjson.JSONDecodeError, Exception) as e:
                 self.logger.warning(f"Error processing mod file {json_file}: {e}")
@@ -214,16 +213,20 @@ class TilesetService:
         # Log unique messages once per mod
         mod_id = mod_dir.name
         for tileset_name in sorted(not_found_tilesets):
-            self.logger.info(f"   mod tileset: {mod_id} cant find '{tileset_name}' tileset to extend")
+            self.logger.info(
+                f"   mod tileset: {mod_id} cant find '{tileset_name}' tileset to extend"
+            )
         for requested_name, actual_folder in sorted(loaded_mappings):
-            self.logger.info(f"   mod tileset: {mod_id} extends {actual_folder} (requested: {requested_name})")
+            self.logger.info(
+                f"   mod tileset: {mod_id} extends {actual_folder} (requested: {requested_name})"
+            )
 
     def _process_mod_tileset(
         self,
         mod_tileset_obj: dict[str, Any],
         mod_dir: Path,
         not_found_tilesets: set[str],
-        loaded_mappings: set[tuple[str, str]]
+        loaded_mappings: set[tuple[str, str]],
     ):
         """Process a single `mod_tileset` JSON object.
 
@@ -255,14 +258,16 @@ class TilesetService:
         # Process each sheet for all resolved tilesets
         for sheet_info in tiles_new:
             for tileset_name, tileset_info in resolved_tilesets:
-                self._process_sheet_info(sheet_info, mod_dir, tileset_info.folder_name, mod_id, tileset_info)
+                self._process_sheet_info(
+                    sheet_info, mod_dir, tileset_info.folder_name, mod_id, tileset_info
+                )
 
     def _build_sheet_name(
         self,
         sheet_file: str,
         sheet_info: dict[str, Any],
         tileset_info: Tileset,
-        is_fallback: bool
+        is_fallback: bool,
     ) -> str:
         """Generate unique sheet name based on file and parameters.
 
@@ -292,7 +297,7 @@ class TilesetService:
         sheet_info: dict[str, Any],
         image_path: Path,
         tileset_info: Tileset,
-        mod_id: str
+        mod_id: str,
     ) -> Sheet:
         """Create Sheet or FallbackSheet instance from JSON configuration.
 
@@ -312,15 +317,23 @@ class TilesetService:
             "name": str(sheet_name),
             "file": str(sheet_file),
             "image": Image.open(image_path),
-            "sprite_width": int(sheet_info.get("sprite_width", tileset_info.grid_width)),
-            "sprite_height": int(sheet_info.get("sprite_height", tileset_info.grid_height)),
+            "sprite_width": int(
+                sheet_info.get("sprite_width", tileset_info.grid_width)
+            ),
+            "sprite_height": int(
+                sheet_info.get("sprite_height", tileset_info.grid_height)
+            ),
             "mod_id": str(mod_id),
             "sprite_offset_x": int(sheet_info.get("sprite_offset_x", 0)),
             "sprite_offset_y": int(sheet_info.get("sprite_offset_y", 0)),
-            "sprite_offset_x_retracted": int(sheet_info.get("sprite_offset_x_retracted", 0)),
-            "sprite_offset_y_retracted": int(sheet_info.get("sprite_offset_y_retracted", 0)),
+            "sprite_offset_x_retracted": int(
+                sheet_info.get("sprite_offset_x_retracted", 0)
+            ),
+            "sprite_offset_y_retracted": int(
+                sheet_info.get("sprite_offset_y_retracted", 0)
+            ),
             "pixelscale": int(sheet_info.get("pixelscale", tileset_info.pixelscale)),
-            "tiles_source": list(sheet_info.get("tiles", []))
+            "tiles_source": list(sheet_info.get("tiles", [])),
         }
         return sheet_class.from_dict(sheet_data)
 
@@ -330,7 +343,7 @@ class TilesetService:
         tile_id: str,
         source_obj: dict[str, Any],
         sheet_id: str,
-        mod_id: str
+        mod_id: str,
     ) -> None:
         """Register a single tile from sheet tile source.
 
@@ -347,18 +360,12 @@ class TilesetService:
         filtered = {k: v for k, v in tile_source_obj.items() if k in allowed_keys}
         tile_source = TileSource.from_dict(filtered)
         tile_obj = Tile(
-            tileid=str(tile_id),
-            source=tile_source,
-            sheet_id=sheet_id,
-            mod_id=mod_id
+            tileid=str(tile_id), source=tile_source, sheet_id=sheet_id, mod_id=mod_id
         )
         self.tiles.add_tile(tileset_name, tile_obj)
 
     def _register_tiles_from_sheet(
-        self,
-        sheet: Sheet,
-        tileset_name: str,
-        mod_id: str
+        self, sheet: Sheet, tileset_name: str, mod_id: str
     ) -> None:
         """Process and register all tiles from a sheet's tile sources.
 
@@ -373,20 +380,12 @@ class TilesetService:
                 # Handle multiple IDs in one tile definition
                 for single_id in cast(list[str], source_obj_id):
                     self._register_tile(
-                        tileset_name,
-                        single_id,
-                        source_obj,
-                        sheet.sheet_id,
-                        mod_id
+                        tileset_name, single_id, source_obj, sheet.sheet_id, mod_id
                     )
             else:
                 # Single ID
                 self._register_tile(
-                    tileset_name,
-                    source_obj_id,
-                    source_obj,
-                    sheet.sheet_id,
-                    mod_id
+                    tileset_name, source_obj_id, source_obj, sheet.sheet_id, mod_id
                 )
 
     def _load_sheet_image(
@@ -394,7 +393,7 @@ class TilesetService:
         sheet_info: dict[str, Any],
         base_dir: Path,
         mod_id: str,
-        tileset_info: Tileset
+        tileset_info: Tileset,
     ) -> Sheet | None:
         """Load sheet image from disk (parallelizable, IO-bound).
 
@@ -425,13 +424,15 @@ class TilesetService:
                 sheet_info,
                 image_path,
                 tileset_info,
-                mod_id
+                mod_id,
             )
 
             return current_sheet
 
         except Exception as e:
-            self.logger.error(f"Error loading sheet {sheet_file} from mod {mod_id}: {e}")
+            self.logger.error(
+                f"Error loading sheet {sheet_file} from mod {mod_id}: {e}"
+            )
             return None
 
     def _process_sheet_info(
@@ -440,7 +441,7 @@ class TilesetService:
         base_dir: Path,
         tileset_name: str,
         mod_id: str,
-        tileset_info: Tileset
+        tileset_info: Tileset,
     ):
         """Materialize a sheet definition into a `Sheet` or `FallbackSheet`.
 
@@ -474,7 +475,7 @@ class TilesetService:
                 sheet_info,
                 image_path,
                 tileset_info,
-                mod_id
+                mod_id,
             )
 
             if not is_fallback:
@@ -483,7 +484,9 @@ class TilesetService:
             self.sheets.add_sheet(tileset_name, current_sheet)
 
         except Exception as e:
-            self.logger.error(f"Error processing sheet {sheet_file} from mod {mod_id}: {e}")
+            self.logger.error(
+                f"Error processing sheet {sheet_file} from mod {mod_id}: {e}"
+            )
 
     def _collect_all_sprite_indices(self, ts: TileSource) -> list[int]:
         """Collect all sprite indices referenced by a TileSource tree.
@@ -493,7 +496,9 @@ class TilesetService:
         """
         result: list[int] = []
 
-        def extract(value: int | list[int] | list[WeightedSprite] | WeightedSprite | None) -> None:
+        def extract(
+            value: int | list[int] | list[WeightedSprite] | WeightedSprite | None,
+        ) -> None:
             if value is None:
                 return
             if isinstance(value, int):
@@ -536,7 +541,7 @@ class TilesetService:
         object_id: str,
         fallback_color: str,
         fallback_symbol: str,
-        season: str = "spring"
+        season: str = "spring",
     ) -> TileObject:
         """Return a `TileObject` either for the given object id or fallback.
 
@@ -545,7 +550,9 @@ class TilesetService:
         """
         # Поиск по object_id с поддержкой сезонов
         tile_obj = self.tiles.get_tile_with_season(tileset_name, object_id, season)
-        fb_sprite = self.sheets.get_ascii(tileset_name, "fallback.png", fallback_color, fallback_symbol)
+        fb_sprite = self.sheets.get_ascii(
+            tileset_name, "fallback.png", fallback_color, fallback_symbol
+        )
 
         if tile_obj:
             sprites_dict: dict[int, Image.Image] = {}
@@ -553,7 +560,9 @@ class TilesetService:
                 # Различаем core и mod спрайты
                 if tile_obj.mod_id == "dda":
                     # Core спрайт - используем глобальный индекс
-                    sprite_image = self.sheets.get_sprite_by_global_index(tileset_name, sprite_index)
+                    sprite_image = self.sheets.get_sprite_by_global_index(
+                        tileset_name, sprite_index
+                    )
                 else:
                     # Mod спрайт - используем локальный индекс в листе мода
                     sprite_image = self.sheets.get_sprite_by_mod_index(
@@ -563,8 +572,9 @@ class TilesetService:
                     sprites_dict[sprite_index] = sprite_image
             return TileObject(
                 source=tile_obj.source,
-                style=self.sheets.get_sheet_info(tileset_name, tile_obj.sheet_id) or SheetInfo(),
-                sprites=sprites_dict
+                style=self.sheets.get_sheet_info(tileset_name, tile_obj.sheet_id)
+                or SheetInfo(),
+                sprites=sprites_dict,
             )
         else:
             # Ensure fb_sprite is not None; if it is, create a blank image as fallback
@@ -572,8 +582,9 @@ class TilesetService:
                 fb_sprite = Image.new("RGBA", (32, 32), (0, 0, 0, 0))
             return TileObject(
                 source=TileSource(id=object_id, fg=-1),
-                style=self.sheets.get_sheet_info(tileset_name, "fallback.png") or SheetInfo(),
-                sprites={-1: fb_sprite}
+                style=self.sheets.get_sheet_info(tileset_name, "fallback.png")
+                or SheetInfo(),
+                sprites={-1: fb_sprite},
             )
 
     def get_available_mods(self, tileset_name: str) -> list[str]:
@@ -588,15 +599,14 @@ class TilesetService:
         for mod_id in self.get_available_mods(tileset_name):
             result[mod_id] = {
                 "sheets": len(self.sheets.get_sheets_from_mod(tileset_name, mod_id)),
-                "tiles": len(self.tiles.tilesets_by_mod.get(tileset_name, {}).get(mod_id, {}))
+                "tiles": len(
+                    self.tiles.tilesets_by_mod.get(tileset_name, {}).get(mod_id, {})
+                ),
             }
         return result
 
     def get_object_and_sprites_from_mod(
-        self,
-        tileset_name: str,
-        mod_id: str,
-        object_id: str
+        self, tileset_name: str, mod_id: str, object_id: str
     ) -> TileObject | None:
         """Return object/sprites strictly from a specific mod or None.
 
@@ -606,13 +616,16 @@ class TilesetService:
         if tile_obj:
             sprites_dict: dict[int, Image.Image] = {}
             for sprite_index in self._collect_all_sprite_indices(tile_obj.source):
-                sprite_image = self.sheets.get_sprite_by_global_index(tileset_name, sprite_index)
+                sprite_image = self.sheets.get_sprite_by_global_index(
+                    tileset_name, sprite_index
+                )
                 if sprite_image:
                     sprites_dict[sprite_index] = sprite_image
             return TileObject(
                 source=tile_obj.source,
-                style=self.sheets.get_sheet_info(tileset_name, tile_obj.sheet_id) or SheetInfo(),
-                sprites=sprites_dict
+                style=self.sheets.get_sheet_info(tileset_name, tile_obj.sheet_id)
+                or SheetInfo(),
+                sprites=sprites_dict,
             )
         return None
 
@@ -622,7 +635,7 @@ class TilesetService:
         object_id: str,
         fallback_color: str,
         fallback_symbol: str,
-        season: str = "spring"
+        season: str = "spring",
     ) -> TileObject:
         """Return object/sprites honoring preferred mod order from settings.
 
@@ -639,8 +652,12 @@ class TilesetService:
         # Get preferred_mods from settings
         preferred_mods = self.settings.active_mods if self.settings else None
 
-        tile_obj = self.tiles.get_tile_with_season_and_priority(tileset_name, object_id, season, preferred_mods)
-        fb_sprite = self.sheets.get_ascii(tileset_name, "fallback.png", fallback_color, fallback_symbol)
+        tile_obj = self.tiles.get_tile_with_season_and_priority(
+            tileset_name, object_id, season, preferred_mods
+        )
+        fb_sprite = self.sheets.get_ascii(
+            tileset_name, "fallback.png", fallback_color, fallback_symbol
+        )
 
         if tile_obj:
             sprites_dict: dict[int, Image.Image] = {}
@@ -648,7 +665,9 @@ class TilesetService:
                 # Различаем core и mod спрайты
                 if tile_obj.mod_id == "dda":
                     # Core спрайт - используем глобальный индекс
-                    sprite_image = self.sheets.get_sprite_by_global_index(tileset_name, sprite_index)
+                    sprite_image = self.sheets.get_sprite_by_global_index(
+                        tileset_name, sprite_index
+                    )
                 else:
                     # Mod спрайт - используем локальный индекс в листе мода
                     sprite_image = self.sheets.get_sprite_by_mod_index(
@@ -658,16 +677,18 @@ class TilesetService:
                     sprites_dict[sprite_index] = sprite_image
             return TileObject(
                 source=tile_obj.source,
-                style=self.sheets.get_sheet_info(tileset_name, tile_obj.sheet_id) or SheetInfo(),
-                sprites=sprites_dict
+                style=self.sheets.get_sheet_info(tileset_name, tile_obj.sheet_id)
+                or SheetInfo(),
+                sprites=sprites_dict,
             )
         else:
             if fb_sprite is None:
                 fb_sprite = Image.new("RGBA", (32, 32), (0, 0, 0, 0))
             return TileObject(
                 source=TileSource(id=object_id, fg=-1),
-                style=self.sheets.get_sheet_info(tileset_name, "fallback.png") or SheetInfo(),
-                sprites={-1: fb_sprite}
+                style=self.sheets.get_sheet_info(tileset_name, "fallback.png")
+                or SheetInfo(),
+                sprites={-1: fb_sprite},
             )
 
     def _ensure_default_fallback(self, tileset_name: str):
@@ -678,9 +699,13 @@ class TilesetService:
 
         # Получаем путь к default_fallback.png через importlib.resources
         try:
-            with resources.path('cdda_maped.resources', 'default_fallback.png') as default_fallback_path:
+            with resources.path(
+                "cdda_maped.resources", "default_fallback.png"
+            ) as default_fallback_path:
                 if not default_fallback_path.exists():
-                    self.logger.warning(f"Default fallback file not found: {default_fallback_path}")
+                    self.logger.warning(
+                        f"Default fallback file not found: {default_fallback_path}"
+                    )
                     return
 
                 # Загружаем и создаем лист внутри with блока
@@ -689,7 +714,9 @@ class TilesetService:
             self.logger.warning(f"Could not load default fallback resource: {e}")
             return
 
-    def _create_default_fallback_sheet(self, tileset_name: str, default_fallback_path: Path):
+    def _create_default_fallback_sheet(
+        self, tileset_name: str, default_fallback_path: Path
+    ):
         """Create and register a default fallback sheet from a resource file."""
         try:
             # Create fallback sheet instance
@@ -705,7 +732,7 @@ class TilesetService:
                 "sprite_offset_x_retracted": 0,
                 "sprite_offset_y_retracted": 0,
                 "pixelscale": 1,
-                "tiles_source": []
+                "tiles_source": [],
             }
             default_fallback_sheet = FallbackSheet.from_dict(fallback_kwargs)
 
@@ -714,7 +741,9 @@ class TilesetService:
             self.logger.debug(f"Added default fallback for tileset: {tileset_name}")
 
         except Exception as e:
-            self.logger.error(f"Failed to create default fallback sheet for {tileset_name}: {e}")
+            self.logger.error(
+                f"Failed to create default fallback sheet for {tileset_name}: {e}"
+            )
             raise
 
     def get_preferred_tileset(self, preferred_name: str, is_iso: bool = False) -> str:
@@ -767,7 +796,9 @@ class TilesetService:
         """
         tileset = self.tilesets.get_tileset(tileset_name)
         if not tileset:
-            raise KeyError(f"Tileset '{tileset_name}' not found. Available: {self.get_available_tilesets()}")
+            raise KeyError(
+                f"Tileset '{tileset_name}' not found. Available: {self.get_available_tilesets()}"
+            )
         return tileset
 
     def tileset_has_real_sprites(self, tileset_name: str) -> bool:
@@ -787,10 +818,14 @@ class TilesetService:
         # Stop early when we find any non-fallback sprite.
         for tileid in tiles_for_ts.keys():
             try:
-                tile_obj: TileObject = self._get_object_and_sprites(tileset_name, tileid, "white", "?")
+                tile_obj: TileObject = self._get_object_and_sprites(
+                    tileset_name, tileid, "white", "?"
+                )
             except Exception:
                 # Be robust: skip problematic tiles
-                self.logger.debug(f"tileset_has_real_sprites: failed to resolve {tileid}")
+                self.logger.debug(
+                    f"tileset_has_real_sprites: failed to resolve {tileid}"
+                )
                 continue
 
             # If any sprite index is not -1, it's a real sprite

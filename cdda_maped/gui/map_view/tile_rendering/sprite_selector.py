@@ -31,7 +31,7 @@ class SpriteSelector:
         x: int,
         y: int,
         object_id: str,
-        is_animated: bool = False
+        is_animated: bool = False,
     ) -> WeightedSprite:
         """Select WeightedSprite frame from weighted list.
 
@@ -53,8 +53,12 @@ class SpriteSelector:
 
         # If animated and we have animation state manager
         if is_animated and self.animation_state_manager:
-            self.animation_state_manager.register_animated_tile(object_id, list(weighted_list))
-            frame = self.animation_state_manager.get_current_frame_for_position(object_id, x, y)
+            self.animation_state_manager.register_animated_tile(
+                object_id, list(weighted_list)
+            )
+            frame = self.animation_state_manager.get_current_frame_for_position(
+                object_id, x, y
+            )
             if frame is not None:
                 return frame
 
@@ -84,7 +88,7 @@ class SpriteSelector:
         x: int,
         y: int,
         object_id: str,
-        is_animated: bool = False
+        is_animated: bool = False,
     ) -> int:
         """Select sprite index from weighted list.
 

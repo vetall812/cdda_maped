@@ -13,7 +13,12 @@ from typing import TYPE_CHECKING
 from PySide6.QtWidgets import QFileDialog, QDialog, QMessageBox
 
 from .. import __version__
-from .dialogs import LoggingSettingsDialog, ModSelectionDialog, show_about_dialog, AnimationTimeoutDialog
+from .dialogs import (
+    LoggingSettingsDialog,
+    ModSelectionDialog,
+    show_about_dialog,
+    AnimationTimeoutDialog,
+)
 from ..utils.gui_log_manager import get_gui_log_manager, toggle_gui_log
 
 if TYPE_CHECKING:
@@ -121,11 +126,12 @@ class MainWindowActions:
         mw.settings.sync()
 
         mw.logger.info(f"CDDA path updated: {old_path} -> {game_path}")
-        if hasattr(mw, 'status_bar') and mw.status_bar:
+        if hasattr(mw, "status_bar") and mw.status_bar:
             mw.status_bar.showMessage(f"CDDA path set to: {game_path.name}", 3000)
 
         # Show log window before reloading services
         from ..utils.gui_log_manager import get_gui_log_manager
+
         gui_log_manager = get_gui_log_manager()
         if gui_log_manager and gui_log_manager.is_available():
             gui_log_manager.show_window()
@@ -146,7 +152,10 @@ class MainWindowActions:
             if hasattr(mw, "object_explorer_window") and mw.object_explorer_window:
                 mw.object_explorer_window.activateWindow()
                 mw.object_explorer_window.raise_()
-                if hasattr(mw.object_explorer_window, "view_ortho") and mw.object_explorer_window.view_ortho:
+                if (
+                    hasattr(mw.object_explorer_window, "view_ortho")
+                    and mw.object_explorer_window.view_ortho
+                ):
                     mw.object_explorer_window.view_ortho.setFocus()
         except Exception as e:
             mw.logger.error(f"Failed to reload content with new path: {e}")
@@ -188,7 +197,9 @@ class MainWindowActions:
             new_always_include_core = dialog.get_always_include_core()
             mw.settings.always_include_core = new_always_include_core
 
-            mw.logger.info(f"Mod configuration updated: {len(new_active_mods)} active mods")
+            mw.logger.info(
+                f"Mod configuration updated: {len(new_active_mods)} active mods"
+            )
             mw.status_bar.showMessage(
                 f"Mod configuration updated: {len(new_active_mods)} active mods",
                 3000,
@@ -206,7 +217,9 @@ class MainWindowActions:
 
         except Exception as e:
             mw.logger.error(f"Failed to show mod selection dialog: {e}")
-            QMessageBox.critical(mw, "Error", f"Failed to update mod configuration:\n{e}")
+            QMessageBox.critical(
+                mw, "Error", f"Failed to update mod configuration:\n{e}"
+            )
 
     def type_slot_mapping_settings(self) -> None:
         """Show type-slot mapping configuration dialog."""
@@ -241,11 +254,15 @@ class MainWindowActions:
                         if hasattr(mw.object_explorer_window, "object_browser"):
                             mw.object_explorer_window.object_browser.refresh()
                     except Exception as e:
-                        mw.logger.error(f"Failed to refresh Object Explorer browser: {e}")
+                        mw.logger.error(
+                            f"Failed to refresh Object Explorer browser: {e}"
+                        )
 
         except Exception as e:
             mw.logger.error(f"Failed to show type-slot mapping dialog: {e}")
-            QMessageBox.critical(mw, "Error", f"Failed to open type-slot mapping dialog:\n{e}")
+            QMessageBox.critical(
+                mw, "Error", f"Failed to open type-slot mapping dialog:\n{e}"
+            )
 
     def logging_settings(self) -> None:
         """Show logging settings dialog."""
@@ -254,7 +271,9 @@ class MainWindowActions:
             dialog = LoggingSettingsDialog(mw.settings, mw)
             dialog.exec()
         except Exception as e:
-            mw.logger.error(f"Error showing logging settings dialog: {e}", exc_info=True)
+            mw.logger.error(
+                f"Error showing logging settings dialog: {e}", exc_info=True
+            )
 
     def animation_timeout_settings(self) -> None:
         """Show animation timeout settings dialog."""
@@ -267,8 +286,12 @@ class MainWindowActions:
                     3000,
                 )
         except Exception as e:
-            mw.logger.error(f"Error showing animation timeout dialog: {e}", exc_info=True)
-            QMessageBox.critical(mw, "Error", f"Failed to show logging settings dialog:\n{e}")
+            mw.logger.error(
+                f"Error showing animation timeout dialog: {e}", exc_info=True
+            )
+            QMessageBox.critical(
+                mw, "Error", f"Failed to show logging settings dialog:\n{e}"
+            )
 
     def multi_z_level_settings(self) -> None:
         """Show multi-z-level rendering settings dialog."""
@@ -284,13 +307,19 @@ class MainWindowActions:
             if dialog.exec() == QDialog.DialogCode.Accepted:
                 mw.status_bar.showMessage("Multi-z-level settings updated", 3000)
         except Exception as e:
-            mw.logger.error(f"Error showing multi-z-level settings dialog: {e}", exc_info=True)
-            QMessageBox.critical(mw, "Error", f"Failed to show multi-z-level settings dialog:\n{e}")
+            mw.logger.error(
+                f"Error showing multi-z-level settings dialog: {e}", exc_info=True
+            )
+            QMessageBox.critical(
+                mw, "Error", f"Failed to show multi-z-level settings dialog:\n{e}"
+            )
 
     def _on_multi_z_settings_changed(self) -> None:
         """Handle multi-z-level settings changes - refresh Object Explorer views."""
         mw = self.main_window
-        mw.logger.debug("Multi-z-level settings changed, refreshing Object Explorer views")
+        mw.logger.debug(
+            "Multi-z-level settings changed, refreshing Object Explorer views"
+        )
 
         # Refresh Object Explorer views if they exist
         if hasattr(mw, "object_explorer_window") and mw.object_explorer_window:
@@ -312,7 +341,9 @@ class MainWindowActions:
 
         if mw.object_explorer_window.isVisible():
             mw.object_explorer_window.hide()
-            mw.status_bar.showMessage("Object Explorer window hidden (F2 to show)", 2000)
+            mw.status_bar.showMessage(
+                "Object Explorer window hidden (F2 to show)", 2000
+            )
         else:
             mw.object_explorer_window.show()
             mw.status_bar.showMessage("Object Explorer window shown (F2 to hide)", 2000)
@@ -357,7 +388,9 @@ class MainWindowActions:
             else:
                 # Fallback: persist and call action handler if available.
                 try:
-                    ew.settings.settings.setValue("explorer/current_object_id", object_id)
+                    ew.settings.settings.setValue(
+                        "explorer/current_object_id", object_id
+                    )
                     ew.settings.settings.sync()
                 except Exception:
                     pass

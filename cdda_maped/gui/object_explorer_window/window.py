@@ -119,7 +119,7 @@ class ObjectExplorerWindow(QMainWindow):
         self._restore_splitter_state()  # Restore after layout is created
 
         # Setup content
-        QTimer.singleShot(100, self.setup_explorer_content) # type: ignore
+        QTimer.singleShot(100, self.setup_explorer_content)  # type: ignore
 
         self.logger.info("ObjectExplorerWindow initialized")
 
@@ -145,7 +145,7 @@ class ObjectExplorerWindow(QMainWindow):
 
         # Toggle animations (Numpad .)
         action_toggle_animations = QAction("Toggle Animations", self)
-        #action_toggle_animations.setShortcut(QKeySequence(Qt.Key_Delete)) # type: ignore[arg-type]
+        # action_toggle_animations.setShortcut(QKeySequence(Qt.Key_Delete)) # type: ignore[arg-type]
         action_toggle_animations.setShortcut(QKeySequence("."))
         action_toggle_animations.triggered.connect(self._on_toggle_animations)
         self.addAction(action_toggle_animations)
@@ -247,7 +247,9 @@ class ObjectExplorerWindow(QMainWindow):
 
         # Toggle state
         self.object_pattern_state[index] = not self.object_pattern_state[index]
-        self.logger.debug(f"Toggled object at index {index}: {self.object_pattern_state[index]}")
+        self.logger.debug(
+            f"Toggled object at index {index}: {self.object_pattern_state[index]}"
+        )
 
         # Update button icons in both views
         self.update_button_icons()
@@ -267,14 +269,22 @@ class ObjectExplorerWindow(QMainWindow):
         for i, is_active in enumerate(self.object_pattern_state):
             icon = "mdi.square" if is_active else "mdi.circle-small"
 
-            if hasattr(self, "view_ortho") and self.view_ortho and hasattr(self.view_ortho, "pattern_buttons"):
+            if (
+                hasattr(self, "view_ortho")
+                and self.view_ortho
+                and hasattr(self.view_ortho, "pattern_buttons")
+            ):
                 try:
                     button = self.view_ortho.pattern_buttons[i]
                     button.setIcon(qta.icon(icon))  # type: ignore[arg-type]
                 except (AttributeError, IndexError):
                     pass
 
-            if hasattr(self, "view_iso") and self.view_iso and hasattr(self.view_iso, "pattern_buttons"):
+            if (
+                hasattr(self, "view_iso")
+                and self.view_iso
+                and hasattr(self.view_iso, "pattern_buttons")
+            ):
                 try:
                     button = self.view_iso.pattern_buttons[i]
                     button.setIcon(qta.icon(icon))  # type: ignore[arg-type]
@@ -295,14 +305,14 @@ class ObjectExplorerWindow(QMainWindow):
         # Index mapping: 0=TL, 1=T, 2=TR, 3=L, 4=C, 5=R, 6=BL, 7=B, 8=BR
         offsets = [
             (-1, -1),  # 0: Top-left
-            (0, -1),   # 1: Top
-            (1, -1),   # 2: Top-right
-            (-1, 0),   # 3: Left
-            (0, 0),    # 4: Center
-            (1, 0),    # 5: Right
-            (-1, 1),   # 6: Bottom-left
-            (0, 1),    # 7: Bottom
-            (1, 1),    # 8: Bottom-right
+            (0, -1),  # 1: Top
+            (1, -1),  # 2: Top-right
+            (-1, 0),  # 3: Left
+            (0, 0),  # 4: Center
+            (1, 0),  # 5: Right
+            (-1, 1),  # 6: Bottom-left
+            (0, 1),  # 7: Bottom
+            (1, 1),  # 8: Bottom-right
         ]
 
         dx, dy = offsets[index]
@@ -319,7 +329,10 @@ class ObjectExplorerWindow(QMainWindow):
 
             # Get game object to determine slot
             from cdda_maped.maps import MapCell
-            game_object = self.game_data_service.get_resolved_object(self.current_object_id)
+
+            game_object = self.game_data_service.get_resolved_object(
+                self.current_object_id
+            )
             if not game_object:
                 return
 
@@ -339,7 +352,9 @@ class ObjectExplorerWindow(QMainWindow):
             try:
                 self.demo_map.set_cell_at(target_x, target_y, z, cell)
             except ValueError as e:
-                self.logger.error(f"Failed to modify cell at ({target_x}, {target_y}): {e}")
+                self.logger.error(
+                    f"Failed to modify cell at ({target_x}, {target_y}): {e}"
+                )
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         """Handle numpad shortcuts for object pattern."""
@@ -391,7 +406,9 @@ class ObjectExplorerWindow(QMainWindow):
         """Restore the state of central splitter from settings."""
         try:
             if hasattr(self, "central_splitter") and self.central_splitter:
-                splitter_state_raw = self.settings.settings.value("explorer/splitter_state")
+                splitter_state_raw = self.settings.settings.value(
+                    "explorer/splitter_state"
+                )
                 if splitter_state_raw:
                     splitter_state: QByteArray | None = None
                     # Ensure it's QByteArray
@@ -426,7 +443,9 @@ class ObjectExplorerWindow(QMainWindow):
         try:
             if hasattr(self, "central_splitter") and self.central_splitter:
                 splitter_state = self.central_splitter.saveState()
-                self.settings.settings.setValue("explorer/splitter_state", splitter_state)
+                self.settings.settings.setValue(
+                    "explorer/splitter_state", splitter_state
+                )
                 self.settings.settings.sync()
                 self.logger.debug("Splitter state saved to settings")
         except Exception as e:
@@ -511,7 +530,9 @@ class ObjectExplorerWindow(QMainWindow):
                     if current_id:
                         self.action_handler.on_object_selected(current_id)
                 except Exception as default_error:
-                    self.logger.warning("Failed to apply default selection: %s", default_error)
+                    self.logger.warning(
+                        "Failed to apply default selection: %s", default_error
+                    )
 
             self.logger.info("Object Explorer content setup complete")
 

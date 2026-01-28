@@ -62,15 +62,13 @@ class GlobalKeyEventFilter(QObject):
                 self.main_window.logger.debug(
                     f"Global backtick detected: scan=0x{native_scan_code:02x}"
                 )
-                self.main_window.toggle_log_window()
+                self.main_window.main_window_actions.toggle_log_window()
                 return True  # Consume the event
 
             # Check for F2 key (Qt.Key_F2 = 0x01000031 = 16777265)
             if key == Qt.Key.Key_F2:
-                self.main_window.logger.debug(
-                    f"Global F2 detected: key={key}"
-                )
-                self.main_window.toggle_object_explorer_window()
+                self.main_window.logger.debug(f"Global F2 detected: key={key}")
+                self.main_window.main_window_actions.toggle_object_explorer_window()
                 return True  # Consume the event
 
         return False  # Don't consume other events

@@ -115,9 +115,7 @@ class MainWindow(QMainWindow):
         cdda_path = (
             self.settings.cdda_path.name if self.settings.cdda_path else "Not set"
         )
-        self.status_bar.showMessage(
-            f"CDDA: {cdda_path}", 10000
-        )
+        self.status_bar.showMessage(f"CDDA: {cdda_path}", 10000)
 
     def setup_demo_content(self) -> None:
         """Setup demo content for visualization."""
@@ -128,6 +126,7 @@ class MainWindow(QMainWindow):
 
             # Show dialog to configure CDDA path on first run
             from PySide6.QtWidgets import QMessageBox
+
             reply = QMessageBox.question(
                 self,
                 "CDDA Path Not Set",
@@ -147,7 +146,9 @@ class MainWindow(QMainWindow):
                     return
 
             # User declined or path not set - show main window with message
-            self.statusBar().showMessage("CDDA path not set. Use File → Setup Game Path to configure", 10000)
+            self.statusBar().showMessage(
+                "CDDA path not set. Use File → Setup Game Path to configure", 10000
+            )
             return
 
         try:
@@ -211,7 +212,9 @@ class MainWindow(QMainWindow):
     def show_object_explorer_window_if_ready(self) -> None:
         """Show Object Explorer window if services are available."""
         try:
-            if not hasattr(self, "game_data_service") or not hasattr(self, "tileset_service"):
+            if not hasattr(self, "game_data_service") or not hasattr(
+                self, "tileset_service"
+            ):
                 # Services not ready; skip
                 self.logger.debug("ObjectExplorerWindow skipped: services not ready")
                 return
@@ -231,7 +234,10 @@ class MainWindow(QMainWindow):
             if hasattr(self, "action_toggle_object_explorer"):
                 self.action_toggle_object_explorer.setEnabled(True)
             # Set focus to ortho view
-            if hasattr(self.object_explorer_window, "view_ortho") and self.object_explorer_window.view_ortho:
+            if (
+                hasattr(self.object_explorer_window, "view_ortho")
+                and self.object_explorer_window.view_ortho
+            ):
                 self.object_explorer_window.view_ortho.setFocus()
         except Exception as e:
             self.logger.error(f"Failed to show Object Explorer window: {e}")

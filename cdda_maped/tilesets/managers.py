@@ -8,7 +8,6 @@ tileset system. No I/O or heavy logic beyond basic JSON reading.
 from pathlib import Path
 from typing import Dict
 from dataclasses import dataclass, field
-from typing import Dict
 from PIL import Image
 import orjson
 import threading
@@ -119,7 +118,9 @@ class TilesManager:
     # tileset_name -> id -> tile
     tilesets: Dict[str, Dict[str, Tile]] = field(default_factory=lambda: {})
     # tileset_name -> mod_id -> id -> tile (для поиска по модам)
-    tilesets_by_mod: Dict[str, Dict[str, Dict[str, Tile]]] = field(default_factory=lambda: {})
+    tilesets_by_mod: Dict[str, Dict[str, Dict[str, Tile]]] = field(
+        default_factory=lambda: {}
+    )
 
     def __post_init__(self):
         self.tilesets = {}

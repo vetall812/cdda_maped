@@ -70,9 +70,13 @@ class TsIsoSelector(IconSelector):
                 # Try to restore saved state, fallback to preferred tileset
                 if not self.restore_state():
                     # Get preferred tileset from settings
-                    preferred = self.tileset_service.get_preferred_tileset(
-                        self.settings.default_tileset_iso, is_iso=True
-                    ) if self.settings else iso_tilesets[0]
+                    preferred = (
+                        self.tileset_service.get_preferred_tileset(
+                            self.settings.default_tileset_iso, is_iso=True
+                        )
+                        if self.settings
+                        else iso_tilesets[0]
+                    )
                     # Find index and select
                     try:
                         index = iso_tilesets.index(preferred)

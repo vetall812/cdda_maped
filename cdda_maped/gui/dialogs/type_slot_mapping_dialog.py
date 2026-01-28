@@ -24,14 +24,18 @@ from PySide6.QtCore import Qt
 from ...settings import AppSettings
 from ...maps.models import CellSlot
 
-
 logger = logging.getLogger(__name__)
 
 
 class TypeSlotMappingDialog(QDialog):
     """Dialog for configuring type-to-slot mapping."""
 
-    def __init__(self, settings: AppSettings, available_types: list[str], parent: QWidget | None = None):
+    def __init__(
+        self,
+        settings: AppSettings,
+        available_types: list[str],
+        parent: QWidget | None = None,
+    ):
         """Initialize the dialog.
 
         Args:
@@ -66,8 +70,12 @@ class TypeSlotMappingDialog(QDialog):
         self.table = QTableWidget()
         self.table.setColumnCount(2)
         self.table.setHorizontalHeaderLabels(["Object Type", "Cell Slot"])
-        self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
-        self.table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)
+        self.table.horizontalHeader().setSectionResizeMode(
+            0, QHeaderView.ResizeMode.Stretch
+        )
+        self.table.horizontalHeader().setSectionResizeMode(
+            1, QHeaderView.ResizeMode.ResizeToContents
+        )
         self.table.setAlternatingRowColors(True)
         layout.addWidget(self.table)
 
@@ -136,7 +144,11 @@ class TypeSlotMappingDialog(QDialog):
             type_item = self.table.item(row, 0)
             slot_combo_widget = self.table.cellWidget(row, 1)
 
-            if type_item and slot_combo_widget and isinstance(slot_combo_widget, QComboBox):
+            if (
+                type_item
+                and slot_combo_widget
+                and isinstance(slot_combo_widget, QComboBox)
+            ):
                 object_type = type_item.text()
                 slot_name = slot_combo_widget.currentText()
 
@@ -157,7 +169,7 @@ class TypeSlotMappingDialog(QDialog):
                     self,
                     "No Types Mapped",
                     "You must map at least one object type to a slot.\n\n"
-                    "Click 'Reset to Defaults' to restore default mappings."
+                    "Click 'Reset to Defaults' to restore default mappings.",
                 )
                 return
 
@@ -169,11 +181,7 @@ class TypeSlotMappingDialog(QDialog):
 
         except Exception as e:
             self.logger.error(f"Failed to save mapping: {e}")
-            QMessageBox.critical(
-                self,
-                "Error",
-                f"Failed to save mapping:\n{e}"
-            )
+            QMessageBox.critical(self, "Error", f"Failed to save mapping:\n{e}")
 
     def reset_to_defaults(self):
         """Reset mapping to defaults."""
@@ -183,7 +191,7 @@ class TypeSlotMappingDialog(QDialog):
             "Are you sure you want to reset the type-slot mapping to default values?\n\n"
             "This will restore the standard mappings for terrain, furniture, and items.",
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-            QMessageBox.StandardButton.No
+            QMessageBox.StandardButton.No,
         )
 
         if reply == QMessageBox.StandardButton.Yes:

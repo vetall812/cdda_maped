@@ -54,7 +54,6 @@ class SceneManager:
         else:
             self._calculate_ortho_bounds()
 
-
     def _calculate_iso_bounds(self):
         """Calculate bounds for isometric projection."""
         tile_width = self.transformer.tile_width
@@ -63,7 +62,9 @@ class SceneManager:
         top_x, top_y = self.transformer.tiles_to_pixels(self.map_width - 1, 0)
         bottom_x, bottom_y = self.transformer.tiles_to_pixels(0, self.map_height - 1)
         left_x, left_y = self.transformer.tiles_to_pixels(0, 0)
-        right_x, right_y = self.transformer.tiles_to_pixels(self.map_width - 1, self.map_height - 1)
+        right_x, right_y = self.transformer.tiles_to_pixels(
+            self.map_width - 1, self.map_height - 1
+        )
 
         # Calculate content bounds (diamond shape)
         min_x = min(left_x, bottom_x)
@@ -76,11 +77,16 @@ class SceneManager:
 
         # Expand scene for panning space
         self.scene_width = content_width * self.EXPANSION_FACTOR
-        self.scene_height = content_height * self.EXPANSION_FACTOR + self.z_level_height * self.num_of_z_levels
+        self.scene_height = (
+            content_height * self.EXPANSION_FACTOR
+            + self.z_level_height * self.num_of_z_levels
+        )
 
         # Center content in expanded scene
         center_offset_x = (self.scene_width - content_width) / 2
-        center_offset_y = (self.scene_height - content_height) / 2 #+ self.z_level_height
+        center_offset_y = (
+            self.scene_height - content_height
+        ) / 2  # + self.z_level_height
 
         # Apply ISO-specific shift (content shifted left by half tile)
         shift_x = -(tile_width / 2)

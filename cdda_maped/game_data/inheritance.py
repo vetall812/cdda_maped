@@ -185,7 +185,9 @@ class InheritanceResolver:
                     result = [
                         item
                         for item in result
-                        if not self._dict_matches(item, cast(dict[str, Any], item_to_delete))
+                        if not self._dict_matches(
+                            item, cast(dict[str, Any], item_to_delete)
+                        )
                     ]
                 else:
                     # For simple values, direct removal
@@ -200,7 +202,7 @@ class InheritanceResolver:
             return result_dict
         else:
             # For other types, return parent unchanged
-            return parent_value # type: ignore
+            return parent_value  # type: ignore
 
     def _dict_matches(self, item: Any, pattern: dict[str, Any]) -> bool:
         """Check if a dict item matches a pattern (for delete operations).

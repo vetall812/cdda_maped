@@ -226,7 +226,7 @@ class ModSelectionDialog(BaseDialog):
 
         self.refresh_active_list()
         self.active_list.setCurrentRow(current_row - 1)
-        self.logger.debug(f"Moved mod up in priority")
+        self.logger.debug("Moved mod up in priority")
 
     def move_selected_down(self) -> None:
         """Move selected mod down in priority."""
@@ -242,7 +242,7 @@ class ModSelectionDialog(BaseDialog):
 
         self.refresh_active_list()
         self.active_list.setCurrentRow(current_row + 1)
-        self.logger.debug(f"Moved mod down in priority")
+        self.logger.debug("Moved mod down in priority")
 
     def clear_active_mods(self) -> None:
         """Clear all active mods after confirmation."""

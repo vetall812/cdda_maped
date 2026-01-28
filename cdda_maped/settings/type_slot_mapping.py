@@ -8,7 +8,6 @@ import logging
 from typing import Dict, Optional, List
 from PySide6.QtCore import QSettings
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -145,4 +144,5 @@ class TypeSlotMappingSettings:
         """
         # Import here to avoid circular dependency
         from ..maps.models import CellSlot
+
         return [slot.name for slot in CellSlot]

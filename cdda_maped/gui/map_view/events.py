@@ -40,8 +40,9 @@ class MapViewEventHandlers:
     def mousePressEvent(self, event: QMouseEvent) -> None:
         """Handle mouse press events for panning."""
         # Middle mouse button or Space+Left mouse button for panning
-        if event.button() == Qt.MouseButton.MiddleButton or \
-           (event.button() == Qt.MouseButton.LeftButton and self._space_pressed):  # type: ignore
+        if event.button() == Qt.MouseButton.MiddleButton or (
+            event.button() == Qt.MouseButton.LeftButton and self._space_pressed
+        ):  # type: ignore
             self._is_panning = True  # type: ignore
             self._pan_start_x = event.position().x()  # type: ignore
             self._pan_start_y = event.position().y()  # type: ignore
@@ -73,8 +74,9 @@ class MapViewEventHandlers:
 
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:
         """Handle mouse release events for panning."""
-        if event.button() == Qt.MouseButton.MiddleButton or \
-           (event.button() == Qt.MouseButton.LeftButton and self._is_panning):  # type: ignore
+        if event.button() == Qt.MouseButton.MiddleButton or (
+            event.button() == Qt.MouseButton.LeftButton and self._is_panning
+        ):  # type: ignore
             self._is_panning = False  # type: ignore
             self.setCursor(Qt.CursorShape.ArrowCursor)  # type: ignore
             event.accept()

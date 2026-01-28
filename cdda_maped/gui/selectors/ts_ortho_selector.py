@@ -71,9 +71,13 @@ class TsOrthoSelector(IconSelector):
                 # Try to restore saved state, fallback to preferred tileset
                 if not self.restore_state():
                     # Get preferred tileset from settings
-                    preferred = self.tileset_service.get_preferred_tileset(
-                        self.settings.default_tileset, is_iso=False
-                    ) if self.settings else ortho_tilesets[0]
+                    preferred = (
+                        self.tileset_service.get_preferred_tileset(
+                            self.settings.default_tileset, is_iso=False
+                        )
+                        if self.settings
+                        else ortho_tilesets[0]
+                    )
                     # Find index and select
                     try:
                         index = ortho_tilesets.index(preferred)

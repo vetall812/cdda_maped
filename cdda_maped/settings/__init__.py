@@ -18,11 +18,11 @@ from .type_slot_mapping import TypeSlotMappingSettings
 from .multi_z_level import MultiZLevelSettings
 
 __all__ = [
-    'AppSettings',
-    'ConfigVersion',
-    'ConfigError',
-    'ValidationResult',
-    'ModSettings',
-    'TypeSlotMappingSettings',
-    'MultiZLevelSettings'
+    "AppSettings",
+    "ConfigVersion",
+    "ConfigError",
+    "ValidationResult",
+    "ModSettings",
+    "TypeSlotMappingSettings",
+    "MultiZLevelSettings",
 ]

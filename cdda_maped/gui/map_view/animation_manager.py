@@ -105,8 +105,12 @@ class GlobalAnimationCoordinator:
 
         # Find minimum interval among active controllers
         min_interval = min(
-            (c.settings.editor.animation_timeout for c in self._controllers if c.is_active()),
-            default=self._interval
+            (
+                c.settings.editor.animation_timeout
+                for c in self._controllers
+                if c.is_active()
+            ),
+            default=self._interval,
         )
 
         if min_interval != self._interval:
@@ -135,6 +139,7 @@ class AnimationState:
     tracks which frame is currently active and how many ticks remain.
     Individual tile instances use position-based offsets for variety.
     """
+
     tile_id: str
     frames: list[WeightedSprite]
     current_frame_index: int = 0
@@ -160,7 +165,9 @@ class AnimationStateManager:
         self._states: dict[str, AnimationState] = {}
         self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
 
-    def register_animated_tile(self, tile_id: str, weighted_sprites: list[WeightedSprite]) -> None:
+    def register_animated_tile(
+        self, tile_id: str, weighted_sprites: list[WeightedSprite]
+    ) -> None:
         """Register an animated tile type for state tracking.
 
         Should be called when an animated tile is first encountered during
@@ -172,10 +179,11 @@ class AnimationStateManager:
         """
         if tile_id not in self._states:
             self._states[tile_id] = AnimationState(
-                tile_id=tile_id,
-                frames=weighted_sprites
+                tile_id=tile_id, frames=weighted_sprites
             )
-            self.logger.debug(f"Registered animated tile: {tile_id} with {len(weighted_sprites)} frames")
+            self.logger.debug(
+                f"Registered animated tile: {tile_id} with {len(weighted_sprites)} frames"
+            )
 
     def get_current_sprite_for_position(self, tile_id: str, x: int, y: int) -> int:
         """Get the current sprite index for a tile at a specific position.
@@ -193,7 +201,9 @@ class AnimationStateManager:
             Sprite index to render
         """
         if tile_id not in self._states:
-            self.logger.warning(f"Attempted to get sprite for unregistered animated tile: {tile_id}")
+            self.logger.warning(
+                f"Attempted to get sprite for unregistered animated tile: {tile_id}"
+            )
             return 0
 
         state = self._states[tile_id]
@@ -218,7 +228,9 @@ class AnimationStateManager:
         else:
             return 0
 
-    def get_current_frame_for_position(self, tile_id: str, x: int, y: int) -> WeightedSprite | None:
+    def get_current_frame_for_position(
+        self, tile_id: str, x: int, y: int
+    ) -> WeightedSprite | None:
         """Get the current WeightedSprite frame for a tile at a position.
 
         This mirrors get_current_sprite_for_position but returns the full
@@ -233,7 +245,9 @@ class AnimationStateManager:
             WeightedSprite for the current frame, or None if unavailable
         """
         if tile_id not in self._states:
-            self.logger.warning(f"Attempted to get frame for unregistered animated tile: {tile_id}")
+            self.logger.warning(
+                f"Attempted to get frame for unregistered animated tile: {tile_id}"
+            )
             return None
 
         state = self._states[tile_id]
@@ -255,7 +269,9 @@ class AnimationStateManager:
 
             if state.ticks_remaining <= 0:
                 # Move to next frame
-                state.current_frame_index = (state.current_frame_index + 1) % len(state.frames)
+                state.current_frame_index = (state.current_frame_index + 1) % len(
+                    state.frames
+                )
                 state.ticks_remaining = state.frames[state.current_frame_index].weight
 
     def clear(self) -> None:
@@ -287,7 +303,7 @@ class AnimationController:
         self,
         map_view: "MapView",
         state_manager: AnimationStateManager,
-        settings: AppSettings
+        settings: AppSettings,
     ):
         """Initialize the animation controller.
 
@@ -314,8 +330,8 @@ class AnimationController:
         self._skipped_ticks = 0
 
         # Frame timing tracking
-        self._last_frame_time = 0
-        self._frame_delta_ms = 0
+        self._last_frame_time: float = 0
+        self._frame_delta_ms: float = 0
 
     def __del__(self):
         """Cleanup: unregister from coordinator."""
@@ -379,7 +395,7 @@ class AnimationController:
         Returns:
             Time in milliseconds between last two frames
         """
-        return self._frame_delta_ms
+        return int(self._frame_delta_ms)
 
     def handle_tick(self) -> None:
         """Handle animation tick from global coordinator.
@@ -399,14 +415,18 @@ class AnimationController:
                 )
             elif self._skipped_ticks > 10 and self._skipped_ticks % 100 == 0:
                 # Log every 100 skips after first warning
-                self.logger.warning(f"Animation still overloaded: {self._skipped_ticks} skips")
+                self.logger.warning(
+                    f"Animation still overloaded: {self._skipped_ticks} skips"
+                )
 
             return
 
         # Log recovery from overload
         if self._skipped_ticks > 0:
             if self._skipped_ticks > 5:
-                self.logger.info(f"Animation recovered after {self._skipped_ticks} skipped ticks")
+                self.logger.info(
+                    f"Animation recovered after {self._skipped_ticks} skipped ticks"
+                )
             self._skipped_ticks = 0
 
         # Update animation state immediately (lightweight)
@@ -443,9 +463,9 @@ class AnimationController:
                     alpha = 0.2
                     if self._frame_delta_ms > 0:
                         smoothed = alpha * delta + (1 - alpha) * self._frame_delta_ms
-                        self._frame_delta_ms = int(smoothed)
+                        self._frame_delta_ms = int(smoothed)  # type: ignore[assignment]
                     else:
-                        self._frame_delta_ms = int(delta)
+                        self._frame_delta_ms = int(delta)  # type: ignore[assignment]
             self._last_frame_time = current_time
         except Exception as e:
             self.logger.error(f"Error during animation render: {e}", exc_info=True)

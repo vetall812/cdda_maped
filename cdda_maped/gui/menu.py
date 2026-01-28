@@ -80,20 +80,30 @@ class MenuBuilder:
         mw.action_select_mods.setStatusTip("Configure active mods and their priorities")
         mw.action_select_mods.triggered.connect(actions.select_mods)
 
-        mw.action_type_slot_mapping = QAction("&Type-Slot Mapping...", mw)
-        mw.action_type_slot_mapping.setStatusTip("Configure which object types map to which cell slots")
-        mw.action_type_slot_mapping.triggered.connect(actions.type_slot_mapping_settings)
+        mw.action_type_slot_mapping = QAction("&Type-Slot Mapping...", mw)  # type: ignore[attr-defined]
+        mw.action_type_slot_mapping.setStatusTip(  # type: ignore[attr-defined]
+            "Configure which object types map to which cell slots"
+        )
+        mw.action_type_slot_mapping.triggered.connect(  # type: ignore[attr-defined]
+            actions.type_slot_mapping_settings
+        )
 
         mw.action_logging_settings = QAction("&Logging Settings...", mw)
         mw.action_logging_settings.setStatusTip("Configure logging settings")
         mw.action_logging_settings.triggered.connect(actions.logging_settings)
 
         mw.action_animation_timeout = QAction("&Animation Timeout...", mw)
-        mw.action_animation_timeout.setStatusTip("Configure animation timeout (1-1000 ms)")
-        mw.action_animation_timeout.triggered.connect(actions.animation_timeout_settings)
+        mw.action_animation_timeout.setStatusTip(
+            "Configure animation timeout (1-1000 ms)"
+        )
+        mw.action_animation_timeout.triggered.connect(
+            actions.animation_timeout_settings
+        )
 
         mw.action_multi_z_level = QAction("&Multi-Z-Level Rendering...", mw)
-        mw.action_multi_z_level.setStatusTip("Configure multi-z-level rendering settings")
+        mw.action_multi_z_level.setStatusTip(
+            "Configure multi-z-level rendering settings"
+        )
         mw.action_multi_z_level.triggered.connect(actions.multi_z_level_settings)
 
     def _setup_extras_actions(self) -> None:
@@ -118,7 +128,9 @@ class MenuBuilder:
         mw.action_toggle_object_explorer.setStatusTip(
             "Show/hide Object Explorer window"
         )
-        mw.action_toggle_object_explorer.triggered.connect(actions.toggle_object_explorer_window)
+        mw.action_toggle_object_explorer.triggered.connect(
+            actions.toggle_object_explorer_window
+        )
 
         # Object Explorer z-order option
         mw.action_object_explorer_stay_above_main = QAction(
@@ -160,13 +172,13 @@ class MenuBuilder:
         """Setup File menu."""
         mw = self.main_window
         file_menu = menubar.addMenu("&File")
-        file_menu.addAction(mw.action_new) # type: ignore[arg-type]
-        file_menu.addAction(mw.action_open) # type: ignore[arg-type]
+        file_menu.addAction(mw.action_new)  # type: ignore[arg-type]
+        file_menu.addAction(mw.action_open)  # type: ignore[arg-type]
         file_menu.addSeparator()
-        file_menu.addAction(mw.action_save) # type: ignore[arg-type]
-        file_menu.addAction(mw.action_save_as) # type: ignore[arg-type]
+        file_menu.addAction(mw.action_save)  # type: ignore[arg-type]
+        file_menu.addAction(mw.action_save_as)  # type: ignore[arg-type]
         file_menu.addSeparator()
-        file_menu.addAction(mw.action_exit) # type: ignore[arg-type]
+        file_menu.addAction(mw.action_exit)  # type: ignore[arg-type]
 
     def _setup_settings_menu(self, menubar: QMenuBar) -> None:
         """Setup Settings menu."""
@@ -175,7 +187,7 @@ class MenuBuilder:
         settings_menu.addAction(mw.action_setup_game_path)  # type: ignore[arg-type]
         settings_menu.addSeparator()
         settings_menu.addAction(mw.action_select_mods)  # type: ignore[arg-type]
-        settings_menu.addAction(mw.action_type_slot_mapping)  # type: ignore[arg-type]
+        settings_menu.addAction(mw.action_type_slot_mapping)  # type: ignore[arg-type,attr-defined]
         settings_menu.addSeparator()
         settings_menu.addAction(mw.action_logging_settings)  # type: ignore[arg-type]
         settings_menu.addAction(mw.action_animation_timeout)  # type: ignore[arg-type]

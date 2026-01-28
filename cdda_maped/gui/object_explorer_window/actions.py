@@ -4,14 +4,12 @@ Handles user interactions and state management.
 """
 
 import logging
-from typing import TYPE_CHECKING, Any, Optional #, cast
-
-import qtawesome as qta  # type: ignore
+from typing import TYPE_CHECKING, Any, Optional  # , cast
 
 if TYPE_CHECKING:
     from .window import ObjectExplorerWindow
 
-from cdda_maped.maps import MapCell #, DemoMap
+from cdda_maped.maps import MapCell  # , DemoMap
 
 
 class ObjectExplorerActions:
@@ -145,7 +143,9 @@ class ObjectExplorerActions:
                     self.logger.error(f"Failed to place object on map: {e}")
                     return
 
-                self.logger.debug(f"Object {object_id} placed at ({center_x}, {center_y}) in slot {slot.name}")
+                self.logger.debug(
+                    f"Object {object_id} placed at ({center_x}, {center_y}) in slot {slot.name}"
+                )
 
                 # Update object pattern state: set center button (index 4) as active
                 ew.object_pattern_state = [False] * 9  # Reset all
@@ -167,8 +167,12 @@ class ObjectExplorerActions:
                     self.logger.debug(f"Ortho view rendered for {object_id}")
                     # Get resolved ID from ortho renderer
                     tile_renderer = ew.view_ortho.tile_renderer
-                    if tile_renderer and hasattr(tile_renderer, "get_resolved_object_id"):
-                        self.current_resolved_ortho_id = tile_renderer.get_resolved_object_id(center_x, center_y)
+                    if tile_renderer and hasattr(
+                        tile_renderer, "get_resolved_object_id"
+                    ):
+                        self.current_resolved_ortho_id = (
+                            tile_renderer.get_resolved_object_id(center_x, center_y)
+                        )
                         if self.current_resolved_ortho_id:
                             self.logger.debug(
                                 f"Ortho: {object_id} -> {self.current_resolved_ortho_id} via looks_like"
@@ -181,8 +185,12 @@ class ObjectExplorerActions:
                     self.logger.debug(f"Iso view rendered for {object_id}")
                     # Get resolved ID from iso renderer
                     tile_renderer = ew.view_iso.tile_renderer
-                    if tile_renderer and hasattr(tile_renderer, "get_resolved_object_id"):
-                        self.current_resolved_iso_id = tile_renderer.get_resolved_object_id(center_x, center_y)
+                    if tile_renderer and hasattr(
+                        tile_renderer, "get_resolved_object_id"
+                    ):
+                        self.current_resolved_iso_id = (
+                            tile_renderer.get_resolved_object_id(center_x, center_y)
+                        )
                         if self.current_resolved_iso_id:
                             self.logger.debug(
                                 f"Iso: {object_id} -> {self.current_resolved_iso_id} via looks_like"
@@ -197,7 +205,9 @@ class ObjectExplorerActions:
                 # Still update JSON displays even if map rendering failed
                 self.update_json_displays(object_id)
         else:
-            self.logger.warning(f"on_object_selected: demo_map or game_data_service not found")
+            self.logger.warning(
+                "on_object_selected: demo_map or game_data_service not found"
+            )
             # Still update JSON displays even if map rendering failed
             self.update_json_displays(object_id)
 
@@ -216,7 +226,11 @@ class ObjectExplorerActions:
             # Get tileset data (ortho) - use stored resolved ID
             if hasattr(ew, "tileset_service") and hasattr(ew, "view_ortho"):
                 resolved_ortho_id = self.current_resolved_ortho_id or object_id
-                current_season = ew.view_ortho.current_season if hasattr(ew.view_ortho, "current_season") else "spring"
+                current_season = (
+                    ew.view_ortho.current_season
+                    if hasattr(ew.view_ortho, "current_season")
+                    else "spring"
+                )
 
                 self._update_tileset_json_display(
                     tileset_name=ew.view_ortho.current_tileset,
@@ -232,7 +246,11 @@ class ObjectExplorerActions:
             # Get tileset data (iso) - use stored resolved ID
             if hasattr(ew, "tileset_service") and hasattr(ew, "view_iso"):
                 resolved_iso_id = self.current_resolved_iso_id or object_id
-                current_season = ew.view_iso.current_season if hasattr(ew.view_iso, "current_season") else "spring"
+                current_season = (
+                    ew.view_iso.current_season
+                    if hasattr(ew.view_iso, "current_season")
+                    else "spring"
+                )
 
                 self._update_tileset_json_display(
                     tileset_name=ew.view_iso.current_tileset,
@@ -296,14 +314,14 @@ class ObjectExplorerActions:
             object_id=resolved_object_id,
             fallback_color=fallback_color,
             fallback_symbol=fallback_symbol,
-            season=season
+            season=season,
         )
 
         # Convert TileObject to dict for display (keeping source as-is)
         # Safe conversion of sprite keys (some might be lists)
         try:
             sprite_keys = [
-                str(key) if isinstance(key, (list, tuple)) else key
+                str(key) if isinstance(key, (list, tuple)) else str(key)
                 for key in tile_object.sprites.keys()
             ]
         except Exception:
@@ -323,7 +341,7 @@ class ObjectExplorerActions:
                 "_original_id": original_object_id,
                 "_resolved_via": "looks_like",
                 "_actual_id": resolved_object_id,
-                **tileset_data
+                **tileset_data,
             }
 
         target_widget.set_json_data(tileset_data)

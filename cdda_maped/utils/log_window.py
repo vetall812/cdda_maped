@@ -248,7 +248,7 @@ class LogWindow(QWidget):
         # Debounce search to avoid too frequent updates
         if hasattr(self, "_search_timer"):
             self._search_timer.stop()
-        self._search_timer = QTimer()
+        self._search_timer: QTimer = QTimer()
         self._search_timer.setSingleShot(True)
         self._search_timer.timeout.connect(self.refresh_display)
         self._search_timer.start(300)  # 300ms delay

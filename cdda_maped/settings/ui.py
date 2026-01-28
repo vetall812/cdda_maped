@@ -49,7 +49,9 @@ class UISettings:
             self.settings.setValue("ui/window_state", widget.saveState())
         self.settings.sync()
 
-    def save_explorer_window_geometry(self, widget: Union[QWidget, QMainWindow]) -> None:
+    def save_explorer_window_geometry(
+        self, widget: Union[QWidget, QMainWindow]
+    ) -> None:
         """Save object explorer window geometry and state."""
         if hasattr(widget, "saveGeometry"):
             self.settings.setValue("explorer/window_geometry", widget.saveGeometry())
@@ -94,7 +96,9 @@ class UISettings:
 
         return restored
 
-    def restore_explorer_window_geometry(self, widget: Union[QWidget, QMainWindow]) -> bool:
+    def restore_explorer_window_geometry(
+        self, widget: Union[QWidget, QMainWindow]
+    ) -> bool:
         """Restore object explorer window geometry/state. Returns True if restored."""
         geometry: Any = self.settings.value("explorer/window_geometry")
         state: Any = self.settings.value("explorer/window_state")

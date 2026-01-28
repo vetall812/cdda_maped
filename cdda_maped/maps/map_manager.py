@@ -57,23 +57,25 @@ class MapManager:
     def reset_demomap(self) -> DemoMap:
         """Reset the current demo map to its initial state.
 
-        Rebuilds the map using the stored factory function, discarding all
-        user modifications.
+                Rebuilds the map using the stored factory function, discarding all
+                user modifications.
 
-        Returns:
-            Freshly built DemoMap instance
-loads the map from JSON, discarding all user modifications.
+                Returns:
+                    Freshly built DemoMap instance
+        loads the map from JSON, discarding all user modifications.
 
-        Returns:
-            Freshly loaded DemoMap instance
+                Returns:
+                    Freshly loaded DemoMap instance
 
-        Raises:
-            RuntimeError: If no map has been loaded yet
+                Raises:
+                    RuntimeError: If no map has been loaded yet
         """
         if self._current_map_id is None:
             raise RuntimeError("No demo map loaded. Call get_demomap() first.")
 
-        self.logger.info(f"Resetting demo map '{self._current_map_id}' to initial state")
+        self.logger.info(
+            f"Resetting demo map '{self._current_map_id}' to initial state"
+        )
         self._current_map = self.registry.load_demo_map(self._current_map_id)
         return self._current_map
 

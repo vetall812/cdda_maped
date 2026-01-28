@@ -83,7 +83,9 @@ class ObjectExplorerMenuBuilder:
 
         # Reset layout action
         reset_layout_action = QAction("&Reset Widget Layout", ew)
-        reset_layout_action.setStatusTip("Reset all widget positions and sizes to default")
+        reset_layout_action.setStatusTip(
+            "Reset all widget positions and sizes to default"
+        )
         reset_layout_action.triggered.connect(ew.reset_widget_layout)
         widgets_menu.addAction(reset_layout_action)  # type: ignore
 

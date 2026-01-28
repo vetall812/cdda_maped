@@ -41,7 +41,15 @@ class GridRenderer:
         # Rotation state (0, 1, 2, 3 for 0°, 90°, 180°, 270°)
         self._rotation_state: int = 0
 
-    def draw_grid(self, map_width: int, map_height: int, min_z: int = 0, max_z: int = 0, z_level_height: int = 0, current_z: int = 0):
+    def draw_grid(
+        self,
+        map_width: int,
+        map_height: int,
+        min_z: int = 0,
+        max_z: int = 0,
+        z_level_height: int = 0,
+        current_z: int = 0,
+    ):
         """Draw grid lines on the scene.
 
         Args:
@@ -59,14 +67,24 @@ class GridRenderer:
         if self._rotation_state in (1, 3):  # 90° or 270°
             rotated_width, rotated_height = map_height, map_width
 
-        self._draw_axes(rotated_width, rotated_height, min_z, max_z, z_level_height, current_z)
+        self._draw_axes(
+            rotated_width, rotated_height, min_z, max_z, z_level_height, current_z
+        )
 
         if self.transformer.is_isometric:
             self._draw_iso_grid(rotated_width, rotated_height)
         else:
             self._draw_ortho_grid(rotated_width, rotated_height)
 
-    def _draw_axes(self, map_width: int, map_height: int, min_z: int = 0, max_z: int = 0, z_level_height: int = 0, current_z: int = 0):
+    def _draw_axes(
+        self,
+        map_width: int,
+        map_height: int,
+        min_z: int = 0,
+        max_z: int = 0,
+        z_level_height: int = 0,
+        current_z: int = 0,
+    ):
         """Draw coordinate axes from the appropriate map corner based on rotation.
 
         For orthogonal: red X (horizontal), green Y (vertical)
@@ -100,14 +118,25 @@ class GridRenderer:
             origin_tile_y = map_height
 
         # Convert to pixel coordinates
-        pixel_x, pixel_y = self.transformer.tiles_to_pixels(origin_tile_x, origin_tile_y)
+        pixel_x, pixel_y = self.transformer.tiles_to_pixels(
+            origin_tile_x, origin_tile_y
+        )
 
         # Add scene offset
         origin_x = pixel_x + self.scene_manager.offset_x
         origin_y = pixel_y + self.scene_manager.offset_y
 
         if self.transformer.is_isometric:
-            self._draw_iso_axes(origin_x, origin_y, min_z, max_z, z_level_height, current_z, map_width, map_height)
+            self._draw_iso_axes(
+                origin_x,
+                origin_y,
+                min_z,
+                max_z,
+                z_level_height,
+                current_z,
+                map_width,
+                map_height,
+            )
         else:
             self._draw_ortho_axes(origin_x, origin_y)
 
@@ -125,7 +154,9 @@ class GridRenderer:
         # Negative tail: 2 tiles
         neg_x_start = max(0, mid_x - 2 * tile_width)
         self.scene.addLine(neg_x_start, mid_y, mid_x, mid_y, pen_dotted)
-        self.scene.addLine(mid_x, mid_y, self.scene_manager.scene_width, mid_y, pen_solid)
+        self.scene.addLine(
+            mid_x, mid_y, self.scene_manager.scene_width, mid_y, pen_solid
+        )
 
         # Green Y axis (vertical)
         pen_dotted = QPen(Qt.GlobalColor.green)
@@ -136,7 +167,9 @@ class GridRenderer:
         # Negative tail: 2 tiles
         neg_y_start = max(0, mid_y - 2 * tile_height)
         self.scene.addLine(mid_x, neg_y_start, mid_x, mid_y, pen_dotted)
-        self.scene.addLine(mid_x, mid_y, mid_x, self.scene_manager.scene_height, pen_solid)
+        self.scene.addLine(
+            mid_x, mid_y, mid_x, self.scene_manager.scene_height, pen_solid
+        )
 
     def set_rotation_state(self, rotation_state: int) -> None:
         """Set the rotation state for axis rendering.
@@ -146,7 +179,17 @@ class GridRenderer:
         """
         self._rotation_state = rotation_state % 4
 
-    def _draw_iso_axes(self, mid_x: float, mid_y: float, min_z: int = 0, max_z: int = 0, z_level_height: int = 0, current_z: int = 0, map_width: int = 0, map_height: int = 0):
+    def _draw_iso_axes(
+        self,
+        mid_x: float,
+        mid_y: float,
+        min_z: int = 0,
+        max_z: int = 0,
+        z_level_height: int = 0,
+        current_z: int = 0,
+        map_width: int = 0,
+        map_height: int = 0,
+    ):
         """Draw isometric axes (diagonal lines with Z axis).
 
         Args:
@@ -168,7 +211,9 @@ class GridRenderer:
         tile_height = self.transformer.tile_height
 
         # Axis scale for positive direction (full scene)
-        axis_length_positive = max(self.scene_manager.scene_width, self.scene_manager.scene_height) / 2
+        axis_length_positive = (
+            max(self.scene_manager.scene_width, self.scene_manager.scene_height) / 2
+        )
         # Negative direction: only 2 tiles
         axis_length_negative = 2 * max(tile_width, tile_height)
 
@@ -252,7 +297,7 @@ class GridRenderer:
         # Calculate actual tile spacing using transformer
         p0_x, p0_y = self.transformer.tiles_to_pixels(0, 0)
         p1_x, p1_y = self.transformer.tiles_to_pixels(1, 0)  # One tile along X
-        tick_interval = ((p1_x - p0_x)**2 + (p1_y - p0_y)**2) ** 0.5
+        tick_interval = ((p1_x - p0_x) ** 2 + (p1_y - p0_y) ** 2) ** 0.5
 
         # Determine which map dimension to use for X axis (depends on rotation)
         # rotation 0, 2: X follows map width
@@ -260,7 +305,11 @@ class GridRenderer:
         x_axis_limit = map_height if self._rotation_state in [1, 3] else map_width
 
         # Ticks in positive direction (limited by appropriate map dimension)
-        num_ticks_positive = min(x_axis_limit, int(axis_length_positive / tick_interval)) if x_axis_limit > 0 else int(axis_length_positive / tick_interval)
+        num_ticks_positive = (
+            min(x_axis_limit, int(axis_length_positive / tick_interval))
+            if x_axis_limit > 0
+            else int(axis_length_positive / tick_interval)
+        )
         for i in range(1, num_ticks_positive + 1):
             tick_center_x = mid_x + x_dir_x * i * tick_interval
             tick_center_y = mid_y + x_dir_y * i * tick_interval
@@ -269,7 +318,7 @@ class GridRenderer:
                 tick_center_y - tick_dir_y * tick_size,
                 tick_center_x + tick_dir_x * tick_size,
                 tick_center_y + tick_dir_y * tick_size,
-                tick_pen
+                tick_pen,
             )
             # Label
             label_text = "x" if i == num_ticks_positive else str(i)
@@ -289,14 +338,14 @@ class GridRenderer:
             elif self._rotation_state == 1:
                 # Labels below and to the right.
                 label_x = tick_center_x + rect.width() + 5
-                label_y = tick_center_y - rect.height()/2 -5
+                label_y = tick_center_y - rect.height() / 2 - 5
             elif self._rotation_state == 2:
                 # Labels below and to the left
                 label_x = tick_center_x - rect.width() + 5
                 label_y = tick_center_y + 5
             else:  # rotation_state == 3
                 # Labels above and to the left
-                label_x = tick_center_x - rect.width()*2
+                label_x = tick_center_x - rect.width() * 2
                 label_y = tick_center_y - 5
 
             text_item.setPos(label_x, label_y)
@@ -334,7 +383,7 @@ class GridRenderer:
         # Calculate actual tile spacing using transformer (Y direction)
         p0_x, p0_y = self.transformer.tiles_to_pixels(0, 0)
         p1_x, p1_y = self.transformer.tiles_to_pixels(0, 1)  # One tile along Y
-        tick_interval_y = ((p1_x - p0_x)**2 + (p1_y - p0_y)**2) ** 0.5
+        tick_interval_y = ((p1_x - p0_x) ** 2 + (p1_y - p0_y) ** 2) ** 0.5
 
         # Determine which map dimension to use for Y axis (depends on rotation)
         # rotation 0, 2: Y follows map height
@@ -342,7 +391,11 @@ class GridRenderer:
         y_axis_limit = map_width if self._rotation_state in [1, 3] else map_height
 
         # Ticks in positive direction (limited by appropriate map dimension)
-        num_ticks_positive_y = min(y_axis_limit, int(axis_length_positive / tick_interval_y)) if y_axis_limit > 0 else int(axis_length_positive / tick_interval_y)
+        num_ticks_positive_y = (
+            min(y_axis_limit, int(axis_length_positive / tick_interval_y))
+            if y_axis_limit > 0
+            else int(axis_length_positive / tick_interval_y)
+        )
         for i in range(1, num_ticks_positive_y + 1):
             tick_center_x = mid_x + y_dir_x * i * tick_interval_y
             tick_center_y = mid_y + y_dir_y * i * tick_interval_y
@@ -351,7 +404,7 @@ class GridRenderer:
                 tick_center_y - tick_dir_y * tick_size,
                 tick_center_x + tick_dir_x * tick_size,
                 tick_center_y + tick_dir_y * tick_size,
-                tick_pen
+                tick_pen,
             )
             # Label
             label_text = "y" if i == num_ticks_positive_y else str(i)
@@ -371,14 +424,14 @@ class GridRenderer:
             elif self._rotation_state == 1:
                 # Labels above and to the right.
                 label_x = tick_center_x - rect.width() - 15
-                label_y = tick_center_y - rect.height()/2 - 5
+                label_y = tick_center_y - rect.height() / 2 - 5
             elif self._rotation_state == 2:
                 # Labels above and to the left
                 label_x = tick_center_x - rect.width() + 5
                 label_y = tick_center_y - rect.height() - 5
             else:  # rotation_state == 3
                 # Labels below and to the right
-                label_x = tick_center_x + rect.width()/2 + 5
+                label_x = tick_center_x + rect.width() / 2 + 5
                 label_y = tick_center_y - 5
 
             text_item.setPos(label_x, label_y)
@@ -390,7 +443,9 @@ class GridRenderer:
         pen_solid.setStyle(Qt.PenStyle.SolidLine)
 
         # Use z_level_height from tileset, or fallback to tile_height
-        grid_z_height = z_level_height if z_level_height > 0 else self.transformer.tile_height
+        grid_z_height = (
+            z_level_height if z_level_height > 0 else self.transformer.tile_height
+        )
 
         # Calculate lengths for positive and negative directions relative to current_z
         # Positive direction: from current_z up to max_z
@@ -422,7 +477,7 @@ class GridRenderer:
             # Draw ticks and labels for positive z-levels
             tick_pen = QPen(self.label_color)
             tick_size = 8
-            symbol_size = 1*20 # Approximate width of '0' character in pixels
+            symbol_size = 1 * 20  # Approximate width of '0' character in pixels
 
             # Start from current_z + 1, go up to max_z
             for z in range(current_z + 1, max_z + 1):
@@ -432,12 +487,16 @@ class GridRenderer:
                 tick_x = mid_x + z_dir_x * offset_from_origin * grid_z_height
                 tick_y = mid_y + z_dir_y * offset_from_origin * grid_z_height
                 # Horizontal tick
-                self.scene.addLine(tick_x - tick_size, tick_y, tick_x + tick_size, tick_y, tick_pen)
+                self.scene.addLine(
+                    tick_x - tick_size, tick_y, tick_x + tick_size, tick_y, tick_pen
+                )
                 # Label with actual z-level
                 text_item = self.scene.addText(f"{z}")
                 text_item.setDefaultTextColor(self.label_color)
                 rect = text_item.boundingRect()
-                text_item.setPos(tick_x - tick_size - symbol_size, tick_y - rect.height() / 2)
+                text_item.setPos(
+                    tick_x - tick_size - symbol_size, tick_y - rect.height() / 2
+                )
 
         # Draw negative direction (dotted) - downward
         if z_length_negative > 0:
@@ -452,7 +511,7 @@ class GridRenderer:
             # Draw ticks and labels for negative z-levels
             tick_pen = QPen(self.label_color)
             tick_size = 8
-            symbol_size = 1*20 # Approximate width of '0' character in pixels
+            symbol_size = 1 * 20  # Approximate width of '0' character in pixels
 
             # Start from current_z - 1, go down to min_z
             for z in range(current_z - 1, min_z - 1, -1):
@@ -462,15 +521,19 @@ class GridRenderer:
                 tick_x = mid_x - z_dir_x * offset_from_origin * grid_z_height
                 tick_y = mid_y - z_dir_y * offset_from_origin * grid_z_height
                 # Horizontal tick
-                self.scene.addLine(tick_x - tick_size, tick_y, tick_x + tick_size, tick_y, tick_pen)
+                self.scene.addLine(
+                    tick_x - tick_size, tick_y, tick_x + tick_size, tick_y, tick_pen
+                )
                 # Label with actual z-level
                 text_item = self.scene.addText(str(z))
                 text_item.setDefaultTextColor(self.label_color)
                 rect = text_item.boundingRect()
-                text_item.setPos(tick_x - tick_size - symbol_size, tick_y - rect.height() / 2)
+                text_item.setPos(
+                    tick_x - tick_size - symbol_size, tick_y - rect.height() / 2
+                )
 
         # Label at origin (current_z)
-        text=f"z : {current_z}"
+        text = f"z : {current_z}"
         symbol_size = 10  # Approximate width of '0' character in pixels
         text_item = self.scene.addText(text)
         text_item.setDefaultTextColor(self.label_color)
@@ -497,7 +560,13 @@ class GridRenderer:
         # Vertical lines
         for x in range(map_width + 1):
             x_pos = x * tile_width + self.scene_manager.offset_x
-            self.scene.addLine(x_pos, self.scene_manager.offset_y, x_pos, self.scene_manager.offset_y + grid_height, self.grid_pen)
+            self.scene.addLine(
+                x_pos,
+                self.scene_manager.offset_y,
+                x_pos,
+                self.scene_manager.offset_y + grid_height,
+                self.grid_pen,
+            )
 
             tick_top = self.scene_manager.offset_y
             self.scene.addLine(x_pos, tick_top, x_pos, tick_top - tick_size, tick_pen)
@@ -506,12 +575,18 @@ class GridRenderer:
             text_item = self.scene.addText(label_text)
             text_item.setDefaultTextColor(self.label_color)
             rect = text_item.boundingRect()
-            text_item.setPos(x_pos , tick_top - tick_size - rect.height())
+            text_item.setPos(x_pos, tick_top - tick_size - rect.height())
 
         # Horizontal lines
         for y in range(map_height + 1):
             y_pos = y * tile_height + self.scene_manager.offset_y
-            self.scene.addLine(self.scene_manager.offset_x, y_pos, self.scene_manager.offset_x + grid_width, y_pos, self.grid_pen)
+            self.scene.addLine(
+                self.scene_manager.offset_x,
+                y_pos,
+                self.scene_manager.offset_x + grid_width,
+                y_pos,
+                self.grid_pen,
+            )
 
             tick_left = self.scene_manager.offset_x
             self.scene.addLine(tick_left, y_pos, tick_left - tick_size, y_pos, tick_pen)
@@ -520,7 +595,7 @@ class GridRenderer:
             text_item = self.scene.addText(label_text)
             text_item.setDefaultTextColor(self.label_color)
             rect = text_item.boundingRect()
-            text_item.setPos(tick_left - tick_size - rect.width(), y_pos )
+            text_item.setPos(tick_left - tick_size - rect.width(), y_pos)
 
     def _draw_iso_grid(self, map_width: int, map_height: int):
         """Draw isometric grid (diamonds).
@@ -551,19 +626,19 @@ class GridRenderer:
 
         # Lines going NE-SW (constant y in ortho)
         for tile_y in range(map_height + 1):
-            points: list[tuple[float, float]] = []
+            points_y: list[tuple[float, float]] = []
             for tile_x in range(map_width + 1):
                 pixel_x, pixel_y = self.transformer.tiles_to_pixels(tile_x, tile_y)
                 scene_x = pixel_x + self.scene_manager.offset_x
                 scene_y = pixel_y + self.scene_manager.offset_y
-                points.append((scene_x, scene_y))
+                points_y.append((scene_x, scene_y))
 
-            for i in range(len(points) - 1):
+            for i in range(len(points_y) - 1):
                 self.scene.addLine(
-                    points[i][0],
-                    points[i][1],
-                    points[i + 1][0],
-                    points[i + 1][1],
+                    points_y[i][0],
+                    points_y[i][1],
+                    points_y[i + 1][0],
+                    points_y[i + 1][1],
                     self.grid_pen,
                 )
 

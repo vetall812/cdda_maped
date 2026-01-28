@@ -40,16 +40,16 @@ class TileRenderer:
     # Binary mask: N=8, E=4, S=2, W=1
     ROTATES_TO_LOOKUP = {
         0b0000: 15,  # no rotates_to - fallback
-        0b1000: 2,   # N
-        0b0100: 3,   # E
-        0b0010: 0,   # S
-        0b0001: 1,   # W
-        0b1100: 6,   # N+E
-        0b0110: 7,   # E+S
-        0b0011: 4,   # S+W
-        0b1001: 5,   # N+W
-        0b0111: 8,   # E+S+W
-        0b1011: 9,   # S+W+N
+        0b1000: 2,  # N
+        0b0100: 3,  # E
+        0b0010: 0,  # S
+        0b0001: 1,  # W
+        0b1100: 6,  # N+E
+        0b0110: 7,  # E+S
+        0b0011: 4,  # S+W
+        0b1001: 5,  # N+W
+        0b0111: 8,  # E+S+W
+        0b1011: 9,  # S+W+N
         0b1101: 10,  # W+N+E
         0b1110: 11,  # N+E+S
         0b1111: 12,  # center
@@ -104,7 +104,9 @@ class TileRenderer:
         # Initialize helper classes with composition
         self.sprite_selector = SpriteSelector(animation_state_manager)
         self.sprite_transformer = SpriteTransformer()
-        self.placeholder_renderer = PlaceholderRenderer(scene, transformer, scene_manager)
+        self.placeholder_renderer = PlaceholderRenderer(
+            scene, transformer, scene_manager
+        )
 
         # Track resolved object IDs for tiles rendered via looks_like
         # Maps (x, y) -> resolved_object_id
@@ -140,7 +142,17 @@ class TileRenderer:
         """Get the resolved object ID for a tile rendered via looks_like."""
         return self._resolved_objects.get((x, y))
 
-    def render_tile(self, tile_x: int, tile_y: int, cell: MapCell, neighbors_cells: list[MapCell | None], transparency: bool = False, y_offset_zlevel: int = 0, brightness_factor: float = 1.0, transparency_factor: float = 1.0) -> None:
+    def render_tile(
+        self,
+        tile_x: int,
+        tile_y: int,
+        cell: MapCell,
+        neighbors_cells: list[MapCell | None],
+        transparency: bool = False,
+        y_offset_zlevel: int = 0,
+        brightness_factor: float = 1.0,
+        transparency_factor: float = 1.0,
+    ) -> None:
         """Render a tile at the specified coordinates based on MapCell content.
 
         Renders terrain first, then furniture on top if present.
@@ -178,24 +190,39 @@ class TileRenderer:
                 transparent_id = object_id + "_transparent"
                 try:
                     fb_color, fb_symbol = self._get_fallback_params(object_id)
-                    tile_obj = self.tileset_service.get_object_and_sprites_with_priority(
-                        tileset_name=tileset_name,
-                        object_id=transparent_id,
-                        fallback_color=fb_color,
-                        fallback_symbol=fb_symbol,
-                        season=self.current_season,
+                    tile_obj = (
+                        self.tileset_service.get_object_and_sprites_with_priority(
+                            tileset_name=tileset_name,
+                            object_id=transparent_id,
+                            fallback_color=fb_color,
+                            fallback_symbol=fb_symbol,
+                            season=self.current_season,
+                        )
                     )
 
                     # If the resolved TileObject contains any sprite index != -1
                     # then it's a real graphical sprite and we can use the suffix.
-                    has_real = any(idx != -1 for idx in tile_obj.sprites.keys()) if tile_obj and tile_obj.sprites else False
+                    has_real = (
+                        any(idx != -1 for idx in tile_obj.sprites.keys())
+                        if tile_obj and tile_obj.sprites
+                        else False
+                    )
                     if has_real:
                         candidate_id = transparent_id
                 except Exception:
                     # On any error, fall back to original id
                     pass
 
-            obj_height = self._render_object(tile_x, tile_y, candidate_id, cell_z_height, neighbors_cells, y_offset_zlevel, brightness_factor, transparency_factor)
+            obj_height = self._render_object(
+                tile_x,
+                tile_y,
+                candidate_id,
+                cell_z_height,
+                neighbors_cells,
+                y_offset_zlevel,
+                brightness_factor,
+                transparency_factor,
+            )
             try:
                 cell_z_height += int(obj_height or 0)
             except Exception:
@@ -210,7 +237,7 @@ class TileRenderer:
         neighbors_cells: list[MapCell | None],
         y_offset_zlevel: int = 0,
         brightness_factor: float = 1.0,
-        transparency_factor: float = 1.0
+        transparency_factor: float = 1.0,
     ) -> int:
         """Render a single object at the specified coordinates and return its 3D height.
 
@@ -245,11 +272,13 @@ class TileRenderer:
             game_object = self.game_data_service.get_resolved_object(object_id)
 
             # Get fallback parameters from game object
-            fallback_color, fallback_symbol = self._get_fallback_params_from_object(game_object, object_id)
+            fallback_color, fallback_symbol = self._get_fallback_params_from_object(
+                game_object, object_id
+            )
 
             # Calculate subtile connectivity
-            subtile_type, subtile_index, alt_index, subtile_symbol = self._calculate_subtile(
-                object_id, neighbors_cells, fallback_symbol
+            subtile_type, subtile_index, alt_index, subtile_symbol = (
+                self._calculate_subtile(object_id, neighbors_cells, fallback_symbol)
             )
 
             # Cache flags for reuse
@@ -267,7 +296,9 @@ class TileRenderer:
                     # Check each neighbor object for "workbench" property
                     neighbor_obj_ids = neighbor.get_all_object_ids()
                     for neighbor_obj_id in neighbor_obj_ids:
-                        neighbor_obj = self.game_data_service.get_resolved_object(neighbor_obj_id)
+                        neighbor_obj = self.game_data_service.get_resolved_object(
+                            neighbor_obj_id
+                        )
                         if neighbor_obj and neighbor_obj.get("workbench"):
                             wb_index = self.WB_INDEX_MAP[index]
                             break
@@ -287,21 +318,27 @@ class TileRenderer:
                 object_id=object_id,
                 fallback_color=fallback_color,
                 fallback_symbol=fallback_symbol,
-                season=self.current_season
+                season=self.current_season,
             )
 
             # If fg sprite is -1 (fallback), try looks_like
-            if (tile_object.source.fg is not None and
-                isinstance(tile_object.source.fg, int) and
-                tile_object.source.fg == -1):
-                object_id, resolved_via_looks_like = self._try_looks_like(original_object_id, game_object)
+            if (
+                tile_object.source.fg is not None
+                and isinstance(tile_object.source.fg, int)
+                and tile_object.source.fg == -1
+            ):
+                object_id, resolved_via_looks_like = self._try_looks_like(
+                    original_object_id, game_object
+                )
                 if resolved_via_looks_like:
-                    tile_object = self.tileset_service.get_object_and_sprites_with_priority(
-                        tileset_name=tileset_name,
-                        object_id=object_id,
-                        fallback_color=fallback_color,
-                        fallback_symbol=fallback_symbol,
-                        season=self.current_season
+                    tile_object = (
+                        self.tileset_service.get_object_and_sprites_with_priority(
+                            tileset_name=tileset_name,
+                            object_id=object_id,
+                            fallback_color=fallback_color,
+                            fallback_symbol=fallback_symbol,
+                            season=self.current_season,
+                        )
                     )
 
             # Track resolved object IDs
@@ -315,14 +352,18 @@ class TileRenderer:
             fg_sprite, bg_sprite = None, None
             for index in (alt_index, subtile_index):
                 fg_sprite, bg_sprite = self._get_sprites_for_tile(
-                    tile_object, tile_x, tile_y, object_id,
-                    subtile_type, index, wb_index
+                    tile_object,
+                    tile_x,
+                    tile_y,
+                    object_id,
+                    subtile_type,
+                    index,
+                    wb_index,
                 )
                 # Stop if we found fg sprite (bg is optional but fg is critical)
                 # Continue to next index if we only found bg without fg
                 if fg_sprite:
                     break
-
 
             # If no sprites found, draw placeholder
             if not fg_sprite and not bg_sprite:
@@ -339,7 +380,8 @@ class TileRenderer:
 
             # Get scene position
             scene_x, scene_y = self.transformer.get_scene_position(
-                tile_x, tile_y,
+                tile_x,
+                tile_y,
                 self.scene_manager.offset_x,
                 self.scene_manager.offset_y,
                 sprite_offset_x,
@@ -356,7 +398,9 @@ class TileRenderer:
 
                 # Apply brightness and transparency as item effects
                 if brightness_factor != 1.0 or transparency_factor != 1.0:
-                    self._apply_visual_effects(bg_item, brightness_factor, transparency_factor)
+                    self._apply_visual_effects(
+                        bg_item, brightness_factor, transparency_factor
+                    )
 
                 self.scene.addItem(bg_item)
 
@@ -369,7 +413,9 @@ class TileRenderer:
 
                 # Apply brightness and transparency as item effects
                 if brightness_factor != 1.0 or transparency_factor != 1.0:
-                    self._apply_visual_effects(fg_item, brightness_factor, transparency_factor)
+                    self._apply_visual_effects(
+                        fg_item, brightness_factor, transparency_factor
+                    )
 
                 self.scene.addItem(fg_item)
             # Return the object's 3D height if provided by the tileset
@@ -379,11 +425,15 @@ class TileRenderer:
                 return 0
 
         except Exception as e:
-            self.logger.warning(f"Failed to render tile {object_id} at ({tile_x}, {tile_y}): {e}")
+            self.logger.warning(
+                f"Failed to render tile {object_id} at ({tile_x}, {tile_y}): {e}"
+            )
             self.placeholder_renderer.draw_placeholder(tile_x, tile_y, object_id)
             return 0
 
-    def _get_fallback_params_from_object(self, game_object: dict[str, Any] | None, object_id: str) -> tuple[str, str]:
+    def _get_fallback_params_from_object(
+        self, game_object: dict[str, Any] | None, object_id: str
+    ) -> tuple[str, str]:
         """Get fallback color and symbol from already fetched game object.
 
         Args:
@@ -454,22 +504,35 @@ class TileRenderer:
         Args:
             orientation_index: 0 = NS, 1 = EW
             groups: [N, W, S, E] boolean list
+
+        Returns:
+            Edge-like index (0-15)
         """
         orientation_index = orientation_index % 2
         N, W, S, E = groups
 
         if orientation_index == 0:  # NS orientation
             match (W, E):
-                case (True, False):  return 0
-                case (False, True):  return 2
-                case (True, True):   return 4
-                case (False, False): return 6
+                case (True, False):
+                    return 0
+                case (False, True):
+                    return 2
+                case (True, True):
+                    return 4
+                case (False, False):
+                    return 6
         else:  # EW orientation
             match (N, S):
-                case (False, True):  return 1
-                case (True, False):  return 3
-                case (True, True):   return 5
-                case (False, False): return 7
+                case (False, True):
+                    return 1
+                case (True, False):
+                    return 3
+                case (True, True):
+                    return 5
+                case (False, False):
+                    return 7
+
+        return 0  # Default fallback
 
     @staticmethod
     def _seasonal_value(raw: str | list[str], default: str, season_index: int) -> str:
@@ -494,7 +557,7 @@ class TileRenderer:
         self,
         object_id: str,
         neighbors_cells: list[MapCell | None],
-        fallback_symbol: str
+        fallback_symbol: str,
     ) -> tuple[str, int, int, str]:
         """Calculate subtile type, index, alt index, and ASCII symbol based on connectivity.
            Where alt index is used for ROTATES_TO variants.
@@ -527,38 +590,48 @@ class TileRenderer:
             neighbor_obj_ids = neighbor.get_all_object_ids()
             neighbor_groups: set[str] = set()
             for neighbor_obj_id in neighbor_obj_ids:
-                neighbor_obj = self.game_data_service.get_resolved_object(neighbor_obj_id)
+                neighbor_obj = self.game_data_service.get_resolved_object(
+                    neighbor_obj_id
+                )
                 if not neighbor_obj:
                     continue
-                neighbor_groups |= self._normalize_groups(neighbor_obj.get("connect_groups", []))
+                neighbor_groups |= self._normalize_groups(
+                    neighbor_obj.get("connect_groups", [])
+                )
 
-            neighbors_info.append({"ids": set(neighbor_obj_ids), "groups": neighbor_groups})
+            neighbors_info.append(
+                {"ids": set(neighbor_obj_ids), "groups": neighbor_groups}
+            )
 
         # Single pass per direction: self-connect, connects_to, rotates_to
         for index, info in enumerate(neighbors_info):
             if not info:
                 continue
 
-            if (not connected_neighbors[index]
-                and object_id in info["ids"]):
+            if not connected_neighbors[index] and object_id in info["ids"]:
                 connected_neighbors[index] = True
 
-            if (not connected_neighbors[index]
+            if (
+                not connected_neighbors[index]
                 and connects_to_groups
-                and connects_to_groups & info["groups"]):
+                and connects_to_groups & info["groups"]
+            ):
                 connected_neighbors[index] = True
 
-            if (not rotates_to_neighbors[index]
+            if (
+                not rotates_to_neighbors[index]
                 and rotates_to_groups
-                and rotates_to_groups & info["groups"]):
+                and rotates_to_groups & info["groups"]
+            ):
                 rotates_to_neighbors[index] = True
 
             # Early exit if all neighbors are processed
-            if (all(connected_neighbors) and
-                (not rotates_to_groups or all(rotates_to_neighbors))):
+            if all(connected_neighbors) and (
+                not rotates_to_groups or all(rotates_to_neighbors)
+            ):
                 break
 
-        #endregion
+        # endregion
 
         # Determine subtile type/index/symbol based on connection count
         num_connected = sum(connected_neighbors)
@@ -568,19 +641,25 @@ class TileRenderer:
                 subtile_type = "end_piece"
                 idx = connected_neighbors.index(True)
                 subtile_index = [2, 3, 0, 1][idx]  # N→S, W→E, S→N, E→W
-                alt_index = self._rotates_to_edge_like_index(subtile_index, rotates_to_neighbors)
+                alt_index = self._rotates_to_edge_like_index(
+                    subtile_index, rotates_to_neighbors
+                )
                 subtile_symbol = chr(self.ASCII_ENDPIECE[subtile_index])
 
             case 2:
                 if connected_neighbors[0] and connected_neighbors[2]:  # N+S
                     subtile_type = "edge"
                     subtile_index = 0
-                    alt_index = self._rotates_to_edge_like_index(subtile_index, rotates_to_neighbors)
+                    alt_index = self._rotates_to_edge_like_index(
+                        subtile_index, rotates_to_neighbors
+                    )
                     subtile_symbol = chr(self.ASCII_EDGE_NS)
                 elif connected_neighbors[1] and connected_neighbors[3]:  # W+E
                     subtile_type = "edge"
                     subtile_index = 1
-                    alt_index = self._rotates_to_edge_like_index(subtile_index, rotates_to_neighbors)
+                    alt_index = self._rotates_to_edge_like_index(
+                        subtile_index, rotates_to_neighbors
+                    )
                     subtile_symbol = chr(self.ASCII_EDGE_WE)
                 else:  # Adjacent corners
                     subtile_type = "corner"
@@ -642,7 +721,9 @@ class TileRenderer:
 
         if game_object and "looks_like" in game_object:
             looks_like_id = game_object["looks_like"]
-            self.logger.debug(f"FG sprite is fallback for {object_id}, trying looks_like: {looks_like_id}")
+            self.logger.debug(
+                f"FG sprite is fallback for {object_id}, trying looks_like: {looks_like_id}"
+            )
             return looks_like_id, True
         return object_id, False
 
@@ -654,7 +735,7 @@ class TileRenderer:
         object_id: str,
         subtile_type: str,
         subtile_index: int,
-        wb_index: int = 0
+        wb_index: int = 0,
     ) -> tuple[Image.Image | None, Image.Image | None]:
         """Get FG and BG sprites for a tile, handling multitile/rotation/weighted.
 
@@ -668,8 +749,12 @@ class TileRenderer:
             )
         else:
             # Simple non-multitile object
-            fg_sprite = self._get_simple_sprite(tile_object, tile_x, tile_y, object_id, wb_index, is_fg=True)
-            bg_sprite = self._get_simple_sprite(tile_object, tile_x, tile_y, object_id, wb_index, is_fg=False)
+            fg_sprite = self._get_simple_sprite(
+                tile_object, tile_x, tile_y, object_id, wb_index, is_fg=True
+            )
+            bg_sprite = self._get_simple_sprite(
+                tile_object, tile_x, tile_y, object_id, wb_index, is_fg=False
+            )
 
         return fg_sprite, bg_sprite
 
@@ -680,7 +765,7 @@ class TileRenderer:
         tile_y: int,
         object_id: str,
         subtile_type: str,
-        subtile_index: int
+        subtile_index: int,
     ) -> tuple[Image.Image | None, Image.Image | None]:
         """Get sprites for multitile object, with rotation support."""
         source = tile_object.source
@@ -690,7 +775,7 @@ class TileRenderer:
         def _resolve_multitile_value(
             value: int | list[int] | list[WeightedSprite] | None,
             idx: int,
-            is_bg: bool = False
+            is_bg: bool = False,
         ) -> int | None:
             """Resolve multitile FG/BG: int, list[int], or list[WeightedSprite]."""
             if value is None or isinstance(value, int):
@@ -710,7 +795,9 @@ class TileRenderer:
             # Case B: list[WeightedSprite]
             frame_list = cast(list[WeightedSprite], value)
             key = f"{object_id}#{subtile_type}{'_bg' if is_bg else ''}"
-            frame = self.sprite_selector.select_weighted_frame(frame_list, tile_x, tile_y, key, is_animated)
+            frame = self.sprite_selector.select_weighted_frame(
+                frame_list, tile_x, tile_y, key, is_animated
+            )
 
             if isinstance(frame.sprite, int):
                 return frame.sprite
@@ -724,21 +811,33 @@ class TileRenderer:
             source_fg = _resolve_multitile_value(subtile.fg, subtile_index)
             source_bg = _resolve_multitile_value(subtile.bg, subtile_index, is_bg=True)
         else:
-            source_fg = source.fg
-            source_bg = source.bg
+            source_fg = source.fg  # type: ignore[assignment]
+            source_bg = source.bg  # type: ignore[assignment]
 
         # Convert indices to sprites
         # Skip fallback sprites (-1) to allow fallback to subtile_index
-        fg_sprite = tile_object.sprites.get(source_fg) if isinstance(source_fg, int) and source_fg != -1 else None
-        bg_sprite = tile_object.sprites.get(source_bg) if isinstance(source_bg, int) and source_bg != -1 else None
+        fg_sprite = (
+            tile_object.sprites.get(source_fg)
+            if isinstance(source_fg, int) and source_fg != -1
+            else None
+        )
+        bg_sprite = (
+            tile_object.sprites.get(source_bg)
+            if isinstance(source_bg, int) and source_bg != -1
+            else None
+        )
 
         # Apply rotation if rotates flag and single sprites
         if source.rotates and subtile:
             if isinstance(subtile.fg, int) and fg_sprite:
-                angle = self.sprite_transformer.get_multitile_rotation_angle(subtile_type, subtile_index)
+                angle = self.sprite_transformer.get_multitile_rotation_angle(
+                    subtile_type, subtile_index
+                )
                 fg_sprite = self.sprite_transformer.rotate_pil_image(fg_sprite, angle)
             if isinstance(subtile.bg, int) and bg_sprite:
-                angle = self.sprite_transformer.get_multitile_rotation_angle(subtile_type, subtile_index)
+                angle = self.sprite_transformer.get_multitile_rotation_angle(
+                    subtile_type, subtile_index
+                )
                 bg_sprite = self.sprite_transformer.rotate_pil_image(bg_sprite, angle)
 
         return fg_sprite, bg_sprite
@@ -750,7 +849,7 @@ class TileRenderer:
         tile_y: int,
         object_id: str,
         wb_index: int = 0,
-        is_fg: bool = True
+        is_fg: bool = True,
     ) -> Image.Image | None:
         """Get sprite for simple (non-multitile) object, handling rotation/weighted."""
         source = tile_object.source
@@ -768,13 +867,17 @@ class TileRenderer:
             # Rotation case: list[int]
             if isinstance(first_elem, int):
                 if is_rotates:
-                    current_rotation = wb_index  # Use workbench alignment index for rotation
+                    current_rotation = (
+                        wb_index  # Use workbench alignment index for rotation
+                    )
                     selected_index = current_rotation % len(source_val)
                     int_list = cast(list[int], source_val)
                     sprite_index = int_list[selected_index]
                     return tile_object.sprites.get(sprite_index)
                 else:
-                    self.logger.error(f"List of indices without rotates for {object_id}")
+                    self.logger.error(
+                        f"List of indices without rotates for {object_id}"
+                    )
                     return None
 
             # Weighted case: list[WeightedSprite]
@@ -792,7 +895,12 @@ class TileRenderer:
 
         return None
 
-    def _apply_visual_effects(self, item: QGraphicsPixmapItem, brightness_factor: float, transparency_factor: float):
+    def _apply_visual_effects(
+        self,
+        item: QGraphicsPixmapItem,
+        brightness_factor: float,
+        transparency_factor: float,
+    ):
         """Apply brightness and transparency effects to a graphics item.
 
         Uses Qt's graphics effects for efficient rendering without pixmap modification.

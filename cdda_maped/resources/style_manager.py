@@ -86,10 +86,14 @@ class StyleManager:
         for additional_style_name in additional_styles:
             additional_content = self.load_style(additional_style_name)
             if additional_content:
-                combined_style += f"\n\n/* {additional_style_name}.qss */\n{additional_content}"
+                combined_style += (
+                    f"\n\n/* {additional_style_name}.qss */\n{additional_content}"
+                )
 
         app.setStyleSheet(combined_style)
-        self.logger.info(f"Applied application stylesheet: {style_name} with {len(additional_styles)} additional styles")
+        self.logger.info(
+            f"Applied application stylesheet: {style_name} with {len(additional_styles)} additional styles"
+        )
         return True
 
 

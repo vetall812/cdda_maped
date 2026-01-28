@@ -107,7 +107,9 @@ OBJECT_TYPE_TO_SLOT: dict[str, CellSlot] = {
 }
 
 
-def get_slot_for_object_type(object_type: str, settings: Optional["AppSettings"] = None) -> Optional[CellSlot]:
+def get_slot_for_object_type(
+    object_type: str, settings: Optional["AppSettings"] = None
+) -> Optional[CellSlot]:
     """Get the cell slot for a given CDDA object type.
 
     First tries to get mapping from user settings, falls back to default mapping.
@@ -211,7 +213,11 @@ class MapCell:
         return SLOT_CAPACITIES.get(slot, SlotCapacity.SINGLE)
 
     def set_content(
-        self, slot: CellSlot, object_id: str, quantity: int = 1, extra_data: Optional[dict[str, Any]] = None
+        self,
+        slot: CellSlot,
+        object_id: str,
+        quantity: int = 1,
+        extra_data: Optional[dict[str, Any]] = None,
     ) -> None:
         """Set content for a specific slot (overwrites for SINGLE, adds for MULTIPLE).
 
@@ -242,7 +248,11 @@ class MapCell:
                 current.append(content)
 
     def add_content(
-        self, slot: CellSlot, object_id: str, quantity: int = 1, extra_data: Optional[dict[str, Any]] = None
+        self,
+        slot: CellSlot,
+        object_id: str,
+        quantity: int = 1,
+        extra_data: Optional[dict[str, Any]] = None,
     ) -> None:
         """Add content to a slot.
 
@@ -276,9 +286,7 @@ class MapCell:
         # If it's a list (MULTIPLE slot), return the first item
         return content[0] if content else None
 
-    def get_all_content_in_slot(
-        self, slot: CellSlot
-    ) -> list[CellSlotContent]:
+    def get_all_content_in_slot(self, slot: CellSlot) -> list[CellSlotContent]:
         """Get all content from a slot (works for both SINGLE and MULTIPLE).
 
         For SINGLE slots: returns list with one element or empty list
@@ -306,7 +314,9 @@ class MapCell:
         """
         self.slots.pop(slot, None)
 
-    def remove_content(self, slot: CellSlot, object_id: str, quantity: Optional[int] = None) -> bool:
+    def remove_content(
+        self, slot: CellSlot, object_id: str, quantity: Optional[int] = None
+    ) -> bool:
         """Remove a specific object from a slot.
 
         For SINGLE slots: removes the content if object_id matches
@@ -365,7 +375,9 @@ class MapCell:
         """
         return slot in self.slots
 
-    def get_all_content(self) -> dict[CellSlot, CellSlotContent | list[CellSlotContent]]:
+    def get_all_content(
+        self,
+    ) -> dict[CellSlot, CellSlotContent | list[CellSlotContent]]:
         """Get all content in this cell, in render order.
 
         Returns:
@@ -477,7 +489,9 @@ class AbstractSector(ABC):
             new_y = self.width - 1 - x
             rotated_cells[(new_x, new_y)] = cell
 
-        return self._make_rotated_sector(rotated_cells, new_width=self.height, new_height=self.width)
+        return self._make_rotated_sector(
+            rotated_cells, new_width=self.height, new_height=self.width
+        )
 
     def rotateCCW(self) -> "AbstractSector":
         """Return a new sector rotated 90° counter-clockwise.
@@ -490,7 +504,9 @@ class AbstractSector(ABC):
             new_y = x
             rotated_cells[(new_x, new_y)] = cell
 
-        return self._make_rotated_sector(rotated_cells, new_width=self.height, new_height=self.width)
+        return self._make_rotated_sector(
+            rotated_cells, new_width=self.height, new_height=self.width
+        )
 
     @abstractmethod
     def _make_rotated_sector(
@@ -500,6 +516,7 @@ class AbstractSector(ABC):
         new_height: int,
     ) -> "AbstractSector":
         """Factory for creating a rotated sector instance of the same concrete type."""
+
 
 @dataclass
 class MapSector(AbstractSector):
@@ -785,10 +802,7 @@ class BaseMap(Generic[TSector]):
         coords = [(x, y - 1), (x - 1, y), (x, y + 1), (x + 1, y)]
         return [self.get_cell_at(cx, cy, z) for cx, cy in coords]
 
-
-    def get_sector(
-        self, x: int, y: int, z: int
-    ) -> Optional[TSector]:
+    def get_sector(self, x: int, y: int, z: int) -> Optional[TSector]:
         """Get a sector from the map.
 
         Args:
@@ -801,9 +815,7 @@ class BaseMap(Generic[TSector]):
         """
         return self.sectors.get((x, y, z))
 
-    def set_sector(
-        self, x: int, y: int, z: int, sector: TSector
-    ) -> None:
+    def set_sector(self, x: int, y: int, z: int, sector: TSector) -> None:
         """Set a sector in the map.
 
         Args:
@@ -835,7 +847,7 @@ class BaseMap(Generic[TSector]):
             New map with rotated sectors at new positions
         """
         if not self.sectors:
-            return BaseMap(sectors={})
+            return BaseMap(sectors={})  # type: ignore[abstract]
 
         # Find bounds
         all_coords = list(self.sectors.keys())
@@ -854,7 +866,7 @@ class BaseMap(Generic[TSector]):
 
             rotated_sectors[(new_sx, new_sy, sz)] = rotated_sector
 
-        return BaseMap(sectors=rotated_sectors)
+        return BaseMap(sectors=rotated_sectors)  # type: ignore[abstract]
 
     def rotateCW(self) -> "BaseMap[TSector]":
         """Rotate entire map 90 degrees clockwise.
@@ -867,7 +879,7 @@ class BaseMap(Generic[TSector]):
             New map with rotated sectors at new positions
         """
         if not self.sectors:
-            return BaseMap(sectors={})
+            return BaseMap(sectors={})  # type: ignore[abstract]
 
         # Find bounds
         all_coords = list(self.sectors.keys())
@@ -886,7 +898,7 @@ class BaseMap(Generic[TSector]):
 
             rotated_sectors[(new_sx, new_sy, sz)] = rotated_sector
 
-        return BaseMap(sectors=rotated_sectors)
+        return BaseMap(sectors=rotated_sectors)  # type: ignore[abstract]
 
 
 @dataclass
@@ -1013,6 +1025,7 @@ class DemoMap(BaseMap[DemoMapSector]):
             return 0
         first_sector = next(iter(self.sectors.values()))
         return first_sector.height
+
     def rotateCW(self) -> "DemoMap":
         """Rotate entire demo map 90 degrees clockwise.
 

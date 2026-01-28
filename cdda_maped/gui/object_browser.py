@@ -24,7 +24,7 @@ from cdda_maped.game_data.models import GameDataCollection
 
 from ..game_data.service import GameDataService
 
-## Name extraction moved to game_data.collection
+# Name extraction moved to game_data.collection
 
 
 class ObjectBrowser(QWidget):
@@ -121,8 +121,8 @@ class ObjectBrowser(QWidget):
         """Set the game data service and load objects."""
         self.game_data_service = service
         # Try to get settings from service if available
-        if hasattr(service, 'settings') and service.settings:
-            self.app_settings = service.settings
+        if hasattr(service, "settings") and service.settings:
+            self.app_settings = service.settings  # type: ignore[assignment]
         self.load_objects()
 
     def _update_type_combo(self, mapped_types: list[str]):
@@ -183,7 +183,9 @@ class ObjectBrowser(QWidget):
                 mapped_types = ["terrain", "furniture", "ITEM"]
 
             self.logger.debug(f"Loading objects for types: {mapped_types}")
-            self.all_objects = self.game_data_service.collect_resolved_objects(mapped_types)
+            self.all_objects = self.game_data_service.collect_resolved_objects(
+                mapped_types
+            )
             self.logger.info(f"Loaded {len(self.all_objects)} objects.")
 
             # Update type combo with loaded types

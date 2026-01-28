@@ -85,7 +85,7 @@ class ObjectExplorerLayoutBuilder:
         selectors_layout.setSpacing(8)
 
         # Set size policy for selectors to be compact
-        for selector in [ # type: ignore
+        for selector in [  # type: ignore
             ew.tileset_selector,
             ew.tileset_iso_selector,
             ew.season_selector,
@@ -235,10 +235,14 @@ class ObjectExplorerLayoutBuilder:
             ew.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, ew.game_json_dock)
             ew.game_json_dock.setVisible(True)
         if hasattr(ew, "tileset_json_dock"):
-            ew.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, ew.tileset_json_dock)
+            ew.addDockWidget(
+                Qt.DockWidgetArea.RightDockWidgetArea, ew.tileset_json_dock
+            )
             ew.tileset_json_dock.setVisible(True)
         if hasattr(ew, "tileset_iso_json_dock"):
-            ew.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, ew.tileset_iso_json_dock)
+            ew.addDockWidget(
+                Qt.DockWidgetArea.RightDockWidgetArea, ew.tileset_iso_json_dock
+            )
             ew.tileset_iso_json_dock.setVisible(True)
 
         # Tabify JSON docks

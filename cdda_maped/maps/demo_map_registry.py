@@ -48,6 +48,7 @@ class DemoMapRegistry:
         """
         try:
             from importlib.resources import files
+
             demo_maps_ref = files("cdda_maped.resources.demo_maps")
 
             # Convert to Path - handle both Traversable and regular paths
@@ -80,14 +81,16 @@ class DemoMapRegistry:
         Returns:
             Path to user's demo_maps directory
         """
-        app_data = QStandardPaths.writableLocation(QStandardPaths.AppDataLocation) # type: ignore
+        app_data = QStandardPaths.writableLocation(QStandardPaths.AppDataLocation)  # type: ignore
         user_demos = Path(app_data) / "demo_maps"
 
         # Ensure directory exists
         try:
             user_demos.mkdir(parents=True, exist_ok=True)
         except Exception as e:
-            self.logger.warning(f"Failed to create user demo maps directory {user_demos}: {e}")
+            self.logger.warning(
+                f"Failed to create user demo maps directory {user_demos}: {e}"
+            )
 
         return user_demos
 
@@ -96,7 +99,9 @@ class DemoMapRegistry:
         builtin_dir = self._get_builtin_demo_maps_dir()
 
         if not builtin_dir.exists():
-            self.logger.warning(f"Built-in demo maps directory not found: {builtin_dir}")
+            self.logger.warning(
+                f"Built-in demo maps directory not found: {builtin_dir}"
+            )
             return
 
         self.logger.info(f"Scanning built-in demo maps from: {builtin_dir}")
@@ -108,7 +113,9 @@ class DemoMapRegistry:
         user_dir = self._get_user_demo_maps_dir()
 
         if not user_dir.exists():
-            self.logger.debug(f"User demo maps directory does not exist yet: {user_dir}")
+            self.logger.debug(
+                f"User demo maps directory does not exist yet: {user_dir}"
+            )
             return
 
         self.logger.info(f"Scanning user demo maps from: {user_dir}")
@@ -134,7 +141,9 @@ class DemoMapRegistry:
 
                 # User maps can override builtin maps by ID
                 if metadata.id in self._metadata and is_builtin:
-                    self.logger.debug(f"Skipping builtin '{metadata.id}', already registered")
+                    self.logger.debug(
+                        f"Skipping builtin '{metadata.id}', already registered"
+                    )
                     continue
 
                 self._metadata[metadata.id] = metadata

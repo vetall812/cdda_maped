@@ -68,7 +68,9 @@ class DockLayoutBuilder:
         browser_layout.addWidget(mw.object_browser)
 
         mw.open_in_object_explorer_button = QPushButton("Open in Object Explorer")
-        mw.open_in_object_explorer_button.setObjectName("open_in_object_explorer_button")
+        mw.open_in_object_explorer_button.setObjectName(
+            "open_in_object_explorer_button"
+        )
         mw.open_in_object_explorer_button.clicked.connect(
             mw.main_window_actions.open_object_explorer_with_selected_object
         )
@@ -85,8 +87,6 @@ class DockLayoutBuilder:
 
     def _connect_signals(self) -> None:
         """Connect signals between widgets."""
-        mw = self.main_window # type: ignore
-
         # Do not connect object browser selection to main window actions.
         # Selection is handled in the Object Explorer window.
 

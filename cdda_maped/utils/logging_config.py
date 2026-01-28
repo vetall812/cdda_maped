@@ -108,7 +108,7 @@ class GuiLogHandler(logging.Handler):
         # Always capture everything for buffer
         super().setLevel(logging.DEBUG)
         # Store the requested level for GUI display (but don't use it here)
-        self.display_level = level
+        self.display_level = level  # type: ignore[assignment]
 
     def emit(self, record: logging.LogRecord) -> None:
         """Emit a log record for GUI display."""
@@ -158,6 +158,7 @@ class GuiLogHandler(logging.Handler):
         """Set callback for error messages (fallback if Qt not available)."""
         self.error_callback = callback
 
+
 class LogEmitter(QObject):
     """Qt object for emitting log signals safely across threads."""
 
@@ -199,9 +200,9 @@ def setup_logging(settings: "AppSettings") -> None:
         if use_colors:
             console_formatter = ColoredFormatter(
                 fmt="%(asctime)s : %(levelname)-8s : %(message)s", datefmt="%H:%M:%S"
-            )
+            )  # type: ignore[assignment]
         else:
-            console_formatter = logging.Formatter(
+            console_formatter = logging.Formatter(  # type: ignore[assignment]
                 fmt="%(asctime)s : %(levelname)-8s : %(message)s", datefmt="%H:%M:%S"
             )
 
@@ -265,7 +266,7 @@ def setup_logging(settings: "AppSettings") -> None:
 
     # Log startup message
     logger = logging.getLogger(__name__)
-    logger.info(f"Logging initialized")
+    logger.info("Logging initialized")
     if console_enabled:
         logger.debug(f"Console logging: {console_level} (colors: {use_colors})")
     if file_enabled and log_path:

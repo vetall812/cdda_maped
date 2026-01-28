@@ -96,10 +96,12 @@ def main() -> int:
 
         # Create main window but don't show it yet (no log_manager parameter needed!)
         logger.info("Creating main window...")
-        _main_window = MainWindow(settings)  # Keep reference alive for Qt event loop
+        main_window = MainWindow(settings)  # Keep reference alive for Qt event loop
 
         # Main window will show itself after demo content is loaded
         logger.info("Main window created, waiting for initialization to complete...")
+        # Reference main_window to satisfy linter
+        _ = main_window
 
         logger.info("Application started successfully")
         return app.exec()

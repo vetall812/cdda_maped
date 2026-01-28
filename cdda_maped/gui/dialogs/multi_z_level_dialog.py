@@ -9,10 +9,20 @@ import logging
 from typing import Optional
 
 from PySide6.QtWidgets import (
-    QDialog, QVBoxLayout, QFormLayout, QGroupBox,
-    QCheckBox, QSpinBox, QDoubleSpinBox, QComboBox, QLabel,
-    QDialogButtonBox, QTableWidget, QTableWidgetItem,
-    QHeaderView, QWidget
+    QDialog,
+    QVBoxLayout,
+    QFormLayout,
+    QGroupBox,
+    QCheckBox,
+    QSpinBox,
+    QDoubleSpinBox,
+    QComboBox,
+    QLabel,
+    QDialogButtonBox,
+    QTableWidget,
+    QTableWidgetItem,
+    QHeaderView,
+    QWidget,
 )
 from PySide6.QtCore import Qt, Signal
 
@@ -79,11 +89,15 @@ class MultiZLevelDialog(QDialog):
 
         self.brightness_above_combo = QComboBox()
         self.brightness_above_combo.addItems(["Darken", "Lighten", "None"])
-        brightness_layout.addRow("Operation above current:", self.brightness_above_combo)
+        brightness_layout.addRow(
+            "Operation above current:", self.brightness_above_combo
+        )
 
         self.brightness_below_combo = QComboBox()
         self.brightness_below_combo.addItems(["Darken", "Lighten", "None"])
-        brightness_layout.addRow("Operation below current:", self.brightness_below_combo)
+        brightness_layout.addRow(
+            "Operation below current:", self.brightness_below_combo
+        )
 
         brightness_group.setLayout(brightness_layout)
         layout.addWidget(brightness_group)
@@ -143,11 +157,19 @@ class MultiZLevelDialog(QDialog):
         self.enable_checkbox.toggled.connect(self._on_settings_changed)
         self.levels_above_spin.valueChanged.connect(self._on_settings_changed)
         self.levels_below_spin.valueChanged.connect(self._on_settings_changed)
-        self.brightness_method_combo.currentTextChanged.connect(self._on_settings_changed)
+        self.brightness_method_combo.currentTextChanged.connect(
+            self._on_settings_changed
+        )
         self.brightness_step_spin.valueChanged.connect(self._on_settings_changed)
-        self.brightness_above_combo.currentTextChanged.connect(self._on_settings_changed)
-        self.brightness_below_combo.currentTextChanged.connect(self._on_settings_changed)
-        self.transparency_method_combo.currentTextChanged.connect(self._on_settings_changed)
+        self.brightness_above_combo.currentTextChanged.connect(
+            self._on_settings_changed
+        )
+        self.brightness_below_combo.currentTextChanged.connect(
+            self._on_settings_changed
+        )
+        self.transparency_method_combo.currentTextChanged.connect(
+            self._on_settings_changed
+        )
         self.transparency_step_spin.valueChanged.connect(self._on_settings_changed)
 
     def _load_settings(self):
@@ -165,8 +187,12 @@ class MultiZLevelDialog(QDialog):
             self.mzl_settings.brightness_operation_below
         )
 
-        self.transparency_method_combo.setCurrentText(self.mzl_settings.transparency_method)
-        self.transparency_step_spin.setValue(self.mzl_settings.transparency_step * 100.0)
+        self.transparency_method_combo.setCurrentText(
+            self.mzl_settings.transparency_method
+        )
+        self.transparency_step_spin.setValue(
+            self.mzl_settings.transparency_step * 100.0
+        )
 
     def _on_settings_changed(self):
         """Handle any setting change - update preview."""
@@ -261,9 +287,7 @@ class MultiZLevelDialog(QDialog):
         else:  # Lighten
             return 1.0 + adjustment
 
-    def _calculate_transparency(
-        self, z_offset: int, method: str, step: float
-    ) -> float:
+    def _calculate_transparency(self, z_offset: int, method: str, step: float) -> float:
         """Calculate transparency factor (matches MultiZLevelSettings logic)."""
         if z_offset == 0:
             return 1.0
@@ -287,12 +311,16 @@ class MultiZLevelDialog(QDialog):
             self.mzl_settings.levels_below = self.levels_below_spin.value()
 
             self.mzl_settings.brightness_method = self.brightness_method_combo.currentText()  # type: ignore
-            self.mzl_settings.brightness_step = self.brightness_step_spin.value() / 100.0
+            self.mzl_settings.brightness_step = (
+                self.brightness_step_spin.value() / 100.0
+            )
             self.mzl_settings.brightness_operation_above = self.brightness_above_combo.currentText()  # type: ignore
             self.mzl_settings.brightness_operation_below = self.brightness_below_combo.currentText()  # type: ignore
 
             self.mzl_settings.transparency_method = self.transparency_method_combo.currentText()  # type: ignore
-            self.mzl_settings.transparency_step = self.transparency_step_spin.value() / 100.0
+            self.mzl_settings.transparency_step = (
+                self.transparency_step_spin.value() / 100.0
+            )
 
             self.logger.info("Multi-z-level settings saved")
             self.settings_changed.emit()

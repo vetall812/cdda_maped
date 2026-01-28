@@ -60,7 +60,9 @@ class AppSettings:
         # Ensure version and migrate if needed
         self._migrator.ensure_version()
 
-        logger.debug(f"Settings initialized for profile '{profile}', stored at: {self.settings.fileName()}")
+        logger.debug(
+            f"Settings initialized for profile '{profile}', stored at: {self.settings.fileName()}"
+        )
 
     # === SUBSYSTEM ACCESS ===
 
@@ -177,11 +179,15 @@ class AppSettings:
         """Restore window geometry and state. Returns True if restored."""
         return self._ui.restore_window_geometry(widget)
 
-    def save_explorer_window_geometry(self, widget: Union[QWidget, QMainWindow]) -> None:
+    def save_explorer_window_geometry(
+        self, widget: Union[QWidget, QMainWindow]
+    ) -> None:
         """Save object explorer window geometry and state."""
         self._ui.save_explorer_window_geometry(widget)
 
-    def restore_explorer_window_geometry(self, widget: Union[QWidget, QMainWindow]) -> bool:
+    def restore_explorer_window_geometry(
+        self, widget: Union[QWidget, QMainWindow]
+    ) -> bool:
         """Restore object explorer window geometry/state. Returns True if restored."""
         return self._ui.restore_explorer_window_geometry(widget)
 
@@ -235,7 +241,9 @@ class AppSettings:
         """Set default tileset name for isometric view."""
         self._editor.default_tileset_iso = value
 
-    def get_preferred_tileset(self, tileset_service: "TilesetService", is_iso: bool = False) -> str:
+    def get_preferred_tileset(
+        self, tileset_service: "TilesetService", is_iso: bool = False
+    ) -> str:
         """Get preferred tileset using smart fallback logic.
 
         Args:

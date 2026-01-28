@@ -46,9 +46,24 @@ class DemoMapSchema:
     Provides validation methods to ensure JSON files conform to expected format.
     """
 
-    REQUIRED_ROOT_FIELDS = {"id", "name", "description", "version", "sector_width", "sector_height", "sectors"}
+    REQUIRED_ROOT_FIELDS = {
+        "id",
+        "name",
+        "description",
+        "version",
+        "sector_width",
+        "sector_height",
+        "sectors",
+    }
     REQUIRED_SECTOR_FIELDS = {"sector_id", "x", "y", "z", "layers"}
-    VALID_LAYER_NAMES = {"terrain", "furniture", "items", "creatures", "graffiti", "fields"}
+    VALID_LAYER_NAMES = {
+        "terrain",
+        "furniture",
+        "items",
+        "creatures",
+        "graffiti",
+        "fields",
+    }
 
     @staticmethod
     def validate_root(data: dict[str, Any]) -> list[str]:
@@ -86,7 +101,9 @@ class DemoMapSchema:
         return errors
 
     @staticmethod
-    def validate_sector(sector_data: dict[str, Any], expected_width: int, expected_height: int) -> list[str]:
+    def validate_sector(
+        sector_data: dict[str, Any], expected_width: int, expected_height: int
+    ) -> list[str]:
         """Validate a sector object.
 
         Args:
@@ -116,7 +133,9 @@ class DemoMapSchema:
         # Validate sector_id is non-empty string (uniqueness checked separately)
         sector_id = sector_data.get("sector_id", "")
         if not isinstance(sector_id, str) or not sector_id:
-            errors.append(f"Sector 'sector_id' must be a non-empty string, got {sector_id!r}")
+            errors.append(
+                f"Sector 'sector_id' must be a non-empty string, got {sector_id!r}"
+            )
 
         # Validate layers
         layers = sector_data.get("layers")
@@ -127,7 +146,9 @@ class DemoMapSchema:
         layers_dict = cast(dict[str, Any], layers)
         for layer_name, grid in layers_dict.items():
             if layer_name not in DemoMapSchema.VALID_LAYER_NAMES:
-                errors.append(f"Unknown layer '{layer_name}', expected one of {DemoMapSchema.VALID_LAYER_NAMES}")
+                errors.append(
+                    f"Unknown layer '{layer_name}', expected one of {DemoMapSchema.VALID_LAYER_NAMES}"
+                )
                 continue
 
             # Validate grid dimensions

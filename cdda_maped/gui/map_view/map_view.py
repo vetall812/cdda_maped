@@ -11,7 +11,15 @@ from typing import Optional, Any
 import qtawesome as qta  # type: ignore
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QPainter, QResizeEvent
-from PySide6.QtWidgets import QGraphicsView, QGraphicsScene, QWidget, QPushButton, QLabel, QHBoxLayout, QVBoxLayout
+from PySide6.QtWidgets import (
+    QGraphicsView,
+    QGraphicsScene,
+    QWidget,
+    QPushButton,
+    QLabel,
+    QHBoxLayout,
+    QVBoxLayout,
+)
 
 from cdda_maped.game_data.service import GameDataService
 from cdda_maped.tilesets.service import TilesetService
@@ -25,6 +33,7 @@ from .animation_manager import AnimationStateManager, AnimationController
 from .events import MapViewEventHandlers
 from cdda_maped.maps import DemoMap, CellSlot, MapCell
 
+
 @dataclass
 class TileRenderInfo:
     """Information needed to render a single tile in isometric view.
@@ -35,6 +44,7 @@ class TileRenderInfo:
         y: Grid Y coordinate
         cell: MapCell at this position
     """
+
     sort_key: tuple[int, int]
     x: int
     y: int
@@ -46,7 +56,6 @@ class MapView(MapViewEventHandlers, QGraphicsView):
 
     Displays a grid-based map with sprites from the active tileset.
     """
-
 
     # Available seasons
     SEASONS = ["spring", "summer", "autumn", "winter"]
@@ -115,7 +124,7 @@ class MapView(MapViewEventHandlers, QGraphicsView):
         self._setup_animation_ui()
 
         # Objects pattern UI overlay
-        self.pattern_buttons: list[QPushButton] = [] # nine buttons will go here
+        self.pattern_buttons: list[QPushButton] = []  # nine buttons will go here
         self._setup_objects_pattern_ui()
 
         # Rotation and center buttons
@@ -143,7 +152,7 @@ class MapView(MapViewEventHandlers, QGraphicsView):
         # Start/Stop button
         self.animation_button = QPushButton("", self)
         self.animation_button.setFixedSize(32, 32)
-        self.animation_button.setIcon(qta.icon("mdi.play")) # type: ignore[arg-type]
+        self.animation_button.setIcon(qta.icon("mdi.play"))  # type: ignore[arg-type]
         self.animation_button.setFlat(True)
         self.animation_button.clicked.connect(self.toggle_animation)
         self.animation_button.setToolTip("Start animation [ Numpad Del ]")
@@ -164,9 +173,15 @@ class MapView(MapViewEventHandlers, QGraphicsView):
     def _setup_objects_pattern_ui(self) -> None:
 
         tooltips = [
-            "7", "8", "9",
-            "4", "5", "6",
-            "1", "2", "3",
+            "7",
+            "8",
+            "9",
+            "4",
+            "5",
+            "6",
+            "1",
+            "2",
+            "3",
         ]
 
         """Setup overlay UI for objects pattern display."""
@@ -187,7 +202,7 @@ class MapView(MapViewEventHandlers, QGraphicsView):
             row_layout.setSpacing(0)
             for _ in range(3):
                 button = QPushButton("", self.objects_pattern_container)
-                button.setIcon(qta.icon("mdi.square-outline")) # type: ignore[arg-type]
+                button.setIcon(qta.icon("mdi.square-outline"))  # type: ignore[arg-type]
                 button.setIconSize(button.size())
                 button.setFixedSize(12, 12)
                 button.setFlat(True)
@@ -195,7 +210,7 @@ class MapView(MapViewEventHandlers, QGraphicsView):
 
                 self.pattern_buttons.append(button)
                 button.setToolTip(f"[ Numpad {tooltips[index]} ]")
-                button.clicked.connect(lambda checked, i=index: self._toggle_object(i)) # type: ignore[arg-type]
+                button.clicked.connect(lambda checked, i=index: self._toggle_object(i))  # type: ignore[arg-type]
                 index += 1
 
                 row_layout.addWidget(button)
@@ -214,7 +229,7 @@ class MapView(MapViewEventHandlers, QGraphicsView):
         # Find parent ObjectExplorerWindow and call toggle_object_in_pattern
         parent: Any = self.parent()
         while parent:
-            if hasattr(parent, 'toggle_object_in_pattern'):
+            if hasattr(parent, "toggle_object_in_pattern"):
                 parent.toggle_object_in_pattern(index)  # type: ignore[attr-defined]
                 return
             parent = parent.parent()
@@ -223,7 +238,7 @@ class MapView(MapViewEventHandlers, QGraphicsView):
         """Setup overlay UI for transparency control."""
         # Just one button - toggle transparency on/off
         self.transparency_button = QPushButton("", self)
-        self.transparency_button.setIcon(qta.icon("mdi.eye")) # type: ignore[arg-type]
+        self.transparency_button.setIcon(qta.icon("mdi.eye"))  # type: ignore[arg-type]
         self.transparency_button.setIconSize(self.transparency_button.size() * 0.8)
         self.transparency_button.setFixedSize(32, 32)
         self.transparency_button.setFlat(True)
@@ -234,7 +249,7 @@ class MapView(MapViewEventHandlers, QGraphicsView):
     def toggle_transparency(self) -> None:
         """add or remove _transparent suffix to object_id for all object in scene."""
         self.is_transparency_enabled = not self.is_transparency_enabled
-        self.transparency_button.setIcon(qta.icon("mdi.eye{}".format("-off" if self.is_transparency_enabled else ""))) # type: ignore[arg-type]
+        self.transparency_button.setIcon(qta.icon("mdi.eye{}".format("-off" if self.is_transparency_enabled else "")))  # type: ignore[arg-type]
         self.logger.info(f"Transparency toggled to: {self.is_transparency_enabled}")
         self.render_map()
 
@@ -248,7 +263,7 @@ class MapView(MapViewEventHandlers, QGraphicsView):
 
         # Rotate CW button
         self.rotate_cw_button = QPushButton("", self.rotation_buttons_container)
-        self.rotate_cw_button.setIcon(qta.icon("mdi.rotate-right")) # type: ignore[arg-type]
+        self.rotate_cw_button.setIcon(qta.icon("mdi.rotate-right"))  # type: ignore[arg-type]
         self.rotate_cw_button.setIconSize(self.rotate_cw_button.size() * 0.8)
         self.rotate_cw_button.setFixedSize(32, 32)
         self.rotate_cw_button.setFlat(True)
@@ -259,7 +274,7 @@ class MapView(MapViewEventHandlers, QGraphicsView):
 
         # Center button
         self.center_button = QPushButton("", self.rotation_buttons_container)
-        self.center_button.setIcon(qta.icon("mdi.crosshairs-gps")) # type: ignore[arg-type]
+        self.center_button.setIcon(qta.icon("mdi.crosshairs-gps"))  # type: ignore[arg-type]
         self.center_button.setIconSize(self.center_button.size() * 0.8)
         self.center_button.setFixedSize(32, 32)
         self.center_button.setFlat(True)
@@ -270,7 +285,7 @@ class MapView(MapViewEventHandlers, QGraphicsView):
 
         # Rotate CCW button
         self.rotate_ccw_button = QPushButton("", self.rotation_buttons_container)
-        self.rotate_ccw_button.setIcon(qta.icon("mdi.rotate-left")) # type: ignore[arg-type]
+        self.rotate_ccw_button.setIcon(qta.icon("mdi.rotate-left"))  # type: ignore[arg-type]
         self.rotate_ccw_button.setIconSize(self.rotate_ccw_button.size() * 0.8)
         self.rotate_ccw_button.setFixedSize(32, 32)
         self.rotate_ccw_button.setFlat(True)
@@ -299,14 +314,14 @@ class MapView(MapViewEventHandlers, QGraphicsView):
         """Toggle animation start/stop."""
         if self.animation_controller.is_active():
             self.animation_controller.stop()
-            self.animation_button.setIcon(qta.icon("mdi.play")) # type: ignore[arg-type]
+            self.animation_button.setIcon(qta.icon("mdi.play"))  # type: ignore[arg-type]
             self.animation_button.setToolTip("Start animation [ Numpad Del ]")
             self.animation_button.setFixedSize(32, 32)
             self.frame_stats_label.hide()
             self.logger.debug("Animation paused by user")
         else:
             self.animation_controller.start()
-            self.animation_button.setIcon(qta.icon("mdi.pause")) # type: ignore[arg-type]
+            self.animation_button.setIcon(qta.icon("mdi.pause"))  # type: ignore[arg-type]
             self.animation_button.setToolTip("Pause animation [ Numpad Del ]")
             self.animation_button.setFixedSize(32, 32)
             self.frame_stats_label.show()
@@ -349,13 +364,17 @@ class MapView(MapViewEventHandlers, QGraphicsView):
             tileset = self.tileset_service.get_tileset(self.current_tileset)
             z_level_height = tileset.grid_z_height
 
-        self.iso_view_map = self.map # Reset iso_view_map to original map
+        self.iso_view_map = self.map  # Reset iso_view_map to original map
 
         # Create scene manager
         # Compute map dimensions in tiles from sector dimensions and counts
         if self.iso_view_map and self.transformer.is_isometric:
-            scene_x_tiles = self.iso_view_map.sector_width * self.iso_view_map.num_sectors_x
-            scene_y_tiles = self.iso_view_map.sector_height * self.iso_view_map.num_sectors_y
+            scene_x_tiles = (
+                self.iso_view_map.sector_width * self.iso_view_map.num_sectors_x
+            )
+            scene_y_tiles = (
+                self.iso_view_map.sector_height * self.iso_view_map.num_sectors_y
+            )
         else:
             scene_x_tiles = self.map.sector_width * self.map.num_sectors_x
             scene_y_tiles = self.map.sector_height * self.map.num_sectors_y
@@ -370,7 +389,9 @@ class MapView(MapViewEventHandlers, QGraphicsView):
         )
 
         # Create grid renderer
-        self.grid_renderer = GridRenderer(self._scene, self.transformer, self.scene_manager)
+        self.grid_renderer = GridRenderer(
+            self._scene, self.transformer, self.scene_manager
+        )
 
         # Create tile renderer
         self.tile_renderer = TileRenderer(
@@ -484,7 +505,7 @@ class MapView(MapViewEventHandlers, QGraphicsView):
 
     def reset_rotation(self) -> None:
         """Reset rotation to initial state (0°)."""
-        self.iso_view_map = self.map # Reset iso_view_map to original map
+        self.iso_view_map = self.map  # Reset iso_view_map to original map
         self.logger.info("Reset view rotation to 0°")
         self.set_rotation_state(0)
         self.centerOn(self._scene.sceneRect().center())
@@ -512,7 +533,7 @@ class MapView(MapViewEventHandlers, QGraphicsView):
         self.centerOn(self._scene.sceneRect().center())
 
         # rendering here is just for testing purposes. will be removed later.
-        #self.render_map()
+        # self.render_map()
 
     def set_grid_visible(self, visible: bool):
         """Set grid visibility."""
@@ -580,7 +601,14 @@ class MapView(MapViewEventHandlers, QGraphicsView):
                 tileset = self.tileset_service.get_tileset(self.current_tileset)
                 z_level_height = tileset.grid_z_height
 
-            self.grid_renderer.draw_grid(scene_x_tiles, scene_y_tiles, min_z, max_z, z_level_height, self.current_z_level)
+            self.grid_renderer.draw_grid(
+                scene_x_tiles,
+                scene_y_tiles,
+                min_z,
+                max_z,
+                z_level_height,
+                self.current_z_level,
+            )
 
         # Draw map content
         self._draw_map_content()
@@ -588,7 +616,9 @@ class MapView(MapViewEventHandlers, QGraphicsView):
         self.logger.debug("Map rendered")
 
     @staticmethod
-    def _get_object_id_from_slot(cell: Optional[MapCell], slot: CellSlot) -> Optional[str]:
+    def _get_object_id_from_slot(
+        cell: Optional[MapCell], slot: CellSlot
+    ) -> Optional[str]:
         """Extract object_id from a specific slot in a cell.
 
         For MULTIPLE-capacity slots with multiple objects, returns the last one.
@@ -616,7 +646,12 @@ class MapView(MapViewEventHandlers, QGraphicsView):
         Supports multi-z-level rendering with brightness and transparency adjustments.
         """
 
-        if not self.map or not self.iso_view_map or not self.tile_renderer or not self.transformer:
+        if (
+            not self.map
+            or not self.iso_view_map
+            or not self.tile_renderer
+            or not self.transformer
+        ):
             return
 
         # Check if multi-z-level rendering is enabled
@@ -629,10 +664,11 @@ class MapView(MapViewEventHandlers, QGraphicsView):
 
         if multi_z_enabled and mzl_settings:
             # Multi-z-level rendering
-            z_low = max(self.map.min_z_level, self.current_z_level - mzl_settings.levels_below)
+            z_low = max(
+                self.map.min_z_level, self.current_z_level - mzl_settings.levels_below
+            )
             z_high = min(
-                self.map.max_z_level,
-                self.current_z_level + mzl_settings.levels_above
+                self.map.max_z_level, self.current_z_level + mzl_settings.levels_above
             )
 
             self.logger.debug(
@@ -660,7 +696,9 @@ class MapView(MapViewEventHandlers, QGraphicsView):
                 brightness_factor = mzl_settings.calculate_brightness_factor(
                     z_offset, operation
                 )
-                transparency_factor = mzl_settings.calculate_transparency_factor(z_offset)
+                transparency_factor = mzl_settings.calculate_transparency_factor(
+                    z_offset
+                )
 
                 # Calculate Y offset for this z-level
                 y_offset = -z_offset * z_level_height
@@ -678,7 +716,11 @@ class MapView(MapViewEventHandlers, QGraphicsView):
             self._render_single_z_level(self.current_z_level, 0, 1.0, 1.0)
 
     def _render_single_z_level(
-        self, z: int, y_offset: int, brightness_factor: float, transparency_factor: float
+        self,
+        z: int,
+        y_offset: int,
+        brightness_factor: float,
+        transparency_factor: float,
     ):
         """Render a single z-level with given adjustments.
 
@@ -688,7 +730,12 @@ class MapView(MapViewEventHandlers, QGraphicsView):
             brightness_factor: Brightness adjustment (0.0-2.0+, 1.0 = normal)
             transparency_factor: Transparency factor (0.0 = invisible, 1.0 = opaque)
         """
-        if not self.map or not self.iso_view_map or not self.tile_renderer or not self.transformer:
+        if (
+            not self.map
+            or not self.iso_view_map
+            or not self.tile_renderer
+            or not self.transformer
+        ):
             return
 
         # Check if z-level is valid
@@ -710,12 +757,18 @@ class MapView(MapViewEventHandlers, QGraphicsView):
         else:
             operation = "None"  # type: ignore
 
-        brightness_factor = multi_z_settings.calculate_brightness_factor(z_diff, operation)
+        brightness_factor = multi_z_settings.calculate_brightness_factor(
+            z_diff, operation
+        )
         transparency_factor = multi_z_settings.calculate_transparency_factor(z_diff)
 
         if self.transformer.is_isometric:
-            width_in_cells = self.iso_view_map.sector_width * self.iso_view_map.num_sectors_x
-            height_in_cells = self.iso_view_map.sector_height * self.iso_view_map.num_sectors_y
+            width_in_cells = (
+                self.iso_view_map.sector_width * self.iso_view_map.num_sectors_x
+            )
+            height_in_cells = (
+                self.iso_view_map.sector_height * self.iso_view_map.num_sectors_y
+            )
             # ISO: collect tiles for this layer and sort by scene position
             tiles: list[TileRenderInfo] = []
 
@@ -736,11 +789,14 @@ class MapView(MapViewEventHandlers, QGraphicsView):
                 # Fetch neighbors for rendering
                 neighbor_cells = self.iso_view_map.get_neighbor_cells(tile.x, tile.y, z)
                 self.tile_renderer.render_tile(
-                    tile.x, tile.y, tile.cell, neighbor_cells,
+                    tile.x,
+                    tile.y,
+                    tile.cell,
+                    neighbor_cells,
                     transparency=self.is_transparency_enabled,
                     y_offset_zlevel=y_offset,
                     brightness_factor=brightness_factor,
-                    transparency_factor=transparency_factor
+                    transparency_factor=transparency_factor,
                 )
         else:
             # Orthogonal: draw row by row (natural order)
@@ -754,11 +810,14 @@ class MapView(MapViewEventHandlers, QGraphicsView):
                         # Get neighbors
                         neighbor_cells = self.map.get_neighbor_cells(x, y, z)
                         self.tile_renderer.render_tile(
-                            x, y, cell, neighbor_cells,
+                            x,
+                            y,
+                            cell,
+                            neighbor_cells,
                             transparency=self.is_transparency_enabled,
                             y_offset_zlevel=y_offset,
                             brightness_factor=brightness_factor,
-                            transparency_factor=transparency_factor
+                            transparency_factor=transparency_factor,
                         )
 
     def resizeEvent(self, event: QResizeEvent) -> None:
@@ -768,7 +827,7 @@ class MapView(MapViewEventHandlers, QGraphicsView):
         # Position animation button (top-left)
         self.animation_ui_container.move(0, 0)
         self.animation_button.move(0, 0)
-        self.frame_stats_label.move(33,0)
+        self.frame_stats_label.move(33, 0)
 
         # Position rotation buttons (bottom-center)
         width = self.width()
@@ -777,16 +836,15 @@ class MapView(MapViewEventHandlers, QGraphicsView):
         self.rotation_buttons_container.move(x_pos, y_pos)
 
         # now we need to add object pattern buttons (top-right)
-        self.objects_pattern_container.move(
-            self.width() - 52, # 3*12
-            0
-        )
+        self.objects_pattern_container.move(self.width() - 52, 0)  # 3*12
 
         # Position transparency button (bottom-left)
         # Move transparency button only if it was created
         if hasattr(self, "transparency_button"):
             try:
-                self.transparency_button.move(0, self.height() - self.transparency_button.height() - 15)
+                self.transparency_button.move(
+                    0, self.height() - self.transparency_button.height() - 15
+                )
             except Exception:
                 # Be defensive: any issue moving the button should not crash the app
                 self.logger.exception("Failed to position transparency button")
