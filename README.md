@@ -1,4 +1,4 @@
-# `🗺️'d`
+# `🗺️'d`&nbsp;[![CI](https://github.com/vetall812/cdda_maped/workflows/CI/badge.svg)](https://github.com/vetall812/cdda_maped/actions/workflows/ci.yml) [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue)](https://www.python.org/downloads/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 ## Cataclysm: Dark Days Ahead - Map Editor
 
