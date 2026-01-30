@@ -102,6 +102,5 @@ body:
     attributes:
       label: "Additional context"
       description: "Any other context that might help reproduce or fix the issue."
-      placeholder: ""
     validations:
       required: false
