@@ -21,7 +21,6 @@ body:
     attributes:
       label: "Motivation / Problem to solve"
       description: "Why is this useful? What problem does it solve?"
-      placeholder: ""
     validations:
       required: true
 
@@ -30,7 +29,6 @@ body:
     attributes:
       label: "Use cases / Examples"
       description: "Describe how users would use this feature."
-      placeholder: ""
     validations:
       required: false
 
@@ -39,7 +37,6 @@ body:
     attributes:
       label: "Implementation ideas (optional)"
       description: "Any suggestions or thoughts on how to implement this"
-      placeholder: ""
     validations:
       required: false
 
@@ -48,6 +45,5 @@ body:
     attributes:
       label: "Alternatives considered"
       description: "Any alternatives you considered and why they may be inferior"
-      placeholder: ""
     validations:
       required: false
