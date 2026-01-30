@@ -1,0 +1,53 @@
+name: "Feature Request"
+description: "Suggest a new feature or improvement for cdda_maped"
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an improvement! Please provide as much context as possible so we can evaluate and prioritise the request.
+
+  - type: input
+    id: title
+    attributes:
+      label: "Short summary"
+      description: "One-line summary of the feature"
+      placeholder: "E.g. Add map export to CDDA JSON format"
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: "Motivation / Problem to solve"
+      description: "Why is this useful? What problem does it solve?"
+      placeholder: ""
+    validations:
+      required: true
+
+  - type: textarea
+    id: use_cases
+    attributes:
+      label: "Use cases / Examples"
+      description: "Describe how users would use this feature."
+      placeholder: ""
+    validations:
+      required: false
+
+  - type: textarea
+    id: implementation_ideas
+    attributes:
+      label: "Implementation ideas (optional)"
+      description: "Any suggestions or thoughts on how to implement this"
+      placeholder: ""
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "Alternatives considered"
+      description: "Any alternatives you considered and why they may be inferior"
+      placeholder: ""
+    validations:
+      required: false
