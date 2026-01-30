@@ -1,0 +1,107 @@
+name: "Bug Report"
+description: "Create a report to help us fix problems with cdda_maped"
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please take a moment to fill out this report. Providing detailed steps and logs helps us reproduce and fix the issue faster.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "Describe the bug"
+      description: "A clear and concise description of what the bug is."
+      placeholder: "E.g. The map preview crashes when opening a tileset."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps_to_reproduce
+    attributes:
+      label: "Steps to reproduce"
+      description: "Provide the exact steps to reproduce the issue."
+      placeholder: |
+        1. Open cdda_maped
+        2. Use tileset X
+        3. Try to open a map preview
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: "Expected behavior"
+      description: "What did you expect to happen?"
+      placeholder: "Map preview should open without crashing."
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual_behavior
+    attributes:
+      label: "Actual behavior"
+      description: "What actually happened (stack trace, crash, wrong result)?"
+      placeholder: "Attach stack trace or short error message."
+    validations:
+      required: true
+
+  - type: input
+    id: cdda_path
+    attributes:
+      label: "CDDA path (if relevant)"
+      description: "Path to your Cataclysm-DDA installation (if used for testing)"
+      placeholder: "./CDDA or D:/CDDA"
+    validations:
+      required: false
+
+  - type: input
+    id: tileset
+    attributes:
+      label: "Tileset (if relevant)"
+      description: "Tileset name used during reproduction"
+      placeholder: "e.g. Ultica_iso, retrodays"
+    validations:
+      required: false
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: "Environment"
+      description: "OS, Python version, cdda_maped version (if known), install method"
+      placeholder: |
+        - OS: Ubuntu 22.04
+        - Python: 3.11
+        - cdda_maped: 0.1.0 (editable install)
+        - Install method: pip editable
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: "Logs / Traceback"
+      description: "Paste relevant logs, traceback or error output here."
+      placeholder: |
+        Traceback (most recent call last):
+        ...
+    validations:
+      required: false
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: "Screenshots / Attachments"
+      description: "Attach images, small sample files, or other relevant attachments."
+      placeholder: "Drag & drop files into the issue."
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: "Additional context"
+      description: "Any other context that might help reproduce or fix the issue."
+      placeholder: ""
+    validations:
+      required: false
