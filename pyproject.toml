@@ -41,9 +41,9 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/cdda-maped/cdda-maped"
-Repository = "https://github.com/cdda-maped/cdda-maped"
-Issues = "https://github.com/cdda-maped/cdda-maped/issues"
+Homepage = "https://github.com/vetall812/cdda_maped"
+Repository = "https://github.com/vetall812/cdda_maped"
+Issues = "https://github.com/vetall812/cdda_maped/issues"
 
 [project.scripts]
 cdda-maped = "cdda_maped.__main__:main"
