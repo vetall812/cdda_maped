@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.dll
+*.dylib
+*.egg-info/
+.eggs/
+.build/
+dist/
+build/
+pip-wheel-metadata/
+.venv/
+venv/
+env/
+ENV/
+
+# Tools
+.pytest_cache/
+.mypy_cache/
+.pytype/
+.coverage
+htmlcov/
+.cache/
+
+# Editors/OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Project specific
+log/
+*.log
+throwaway/
+temp/
+tmp/
+*.tmp
+
+# Development
+.vscode/settings.json
+
+# OS specific
+Thumbs.db
+logs/

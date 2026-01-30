@@ -1,0 +1,51 @@
+/* Map View overlay controls styles */
+
+/* Compact icon buttons (30x30px) for overlay controls */
+QPushButton[class="map-overlay-button"] {
+    min-width: 30px;
+    min-height: 30px;
+    max-width: 30px;
+    max-height: 30px;
+}
+
+/* Small icon buttons (12x12px) for pattern grid */
+QPushButton[class="pattern-button"] {
+    min-width: 12px;
+    min-height: 12px;
+    max-width: 12px;
+    max-height: 12px;
+}
+
+/* Frame stats label overlay */
+QLabel[class="frame-stats"] {
+    background-color: rgba(0, 0, 0, 128);
+    color: white;
+    padding: 2px 4px;
+    border-radius: 2px;
+    font-size: 10px;
+}
+
+/* Frame stats label with color indicator (green/yellow/red) */
+QLabel[class="frame-stats-green"] {
+    background-color: rgba(0, 128, 0, 180);
+    color: white;
+    padding: 2px 4px;
+    border-radius: 2px;
+    font-size: 10px;
+}
+
+QLabel[class="frame-stats-yellow"] {
+    background-color: rgba(200, 150, 0, 180);
+    color: white;
+    padding: 2px 4px;
+    border-radius: 2px;
+    font-size: 10px;
+}
+
+QLabel[class="frame-stats-red"] {
+    background-color: rgba(200, 0, 0, 180);
+    color: white;
+    padding: 2px 4px;
+    border-radius: 2px;
+    font-size: 10px;
+}

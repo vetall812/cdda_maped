@@ -1,0 +1,25 @@
+{
+  "id": "empty",
+  "name": "Empty map",
+  "description": "Empty 5x5 map for experiments",
+  "version": "1.0",
+  "sector_width": 5,
+  "sector_height": 5,
+  "sectors": [
+    {
+      "sector_id": "0_0_0-empty",
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "layers": {
+        "terrain": [
+          ["", "", "", "", ""],
+          ["", "", "", "", ""],
+          ["", "", "", "", ""],
+          ["", "", "", "", ""],
+          ["", "", "", "", ""]
+        ]
+      }
+    }
+  ]
+}

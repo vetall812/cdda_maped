@@ -1,0 +1,32 @@
+{
+  "id": "default",
+  "name": "Wall, grass, tree and fence",
+  "description": "Simple one-story house with door, window, and fence around. Outside there is grass and a tree.",
+  "version": "1.0",
+  "sector_width": 5,
+  "sector_height": 5,
+  "sectors": [
+    {
+      "sector_id": "0_0_0-default_map",
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "layers": {
+        "terrain": [
+          ["t_brick_wall", "t_door_red_c", "t_brick_wall", "t_brick_wall", "t_brick_wall"],
+          ["t_grass", "t_dirt", "t_grass", "t_grass", "t_window_domestic"],
+          ["t_grass", "t_dirt", "t_grass", "t_grass", "t_brick_wall"],
+          ["t_grass", "t_dirt", "t_dirt", "t_grass", "t_tree_alder"],
+          ["t_fence", "t_fence", "t_fencegate_o", "t_fence", "t_fence"]
+        ],
+        "furniture": [
+          ["", "", "", "", ""],
+          ["", "", "", "", ""],
+          ["", "", "f_table", "f_chair", ""],
+          ["", "", "", "", ""],
+          ["", "", "", "", ""]
+        ]
+      }
+    }
+  ]
+}
